@@ -1,4 +1,4 @@
-name: Time Tracking API
+name: build
 on:
   push:
     branches: 
