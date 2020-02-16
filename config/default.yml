@@ -1,0 +1,5 @@
+application:
+  hostname: localhost
+
+logging:
+  output: production
