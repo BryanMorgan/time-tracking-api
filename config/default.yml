@@ -3,3 +3,16 @@ application:
 
 logging:
   output: production
+
+postgres:
+  username: timemaster
+  password: timemaster-change-me
+  database: timetracker
+  sslmode: require
+  timeout: 60 #seconds
+  connectLifetime: 2
+  maxIdle: 10
+  maxOpen: 20
+  master:
+    host: localhost
+    port: 5432

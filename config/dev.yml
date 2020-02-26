@@ -3,3 +3,10 @@ application:
 
 logging:
   output: console
+
+postgres:
+  sslmode: disable
+  timeout: 2
+  maxIdle: 2
+  maxOpen: 4
+
