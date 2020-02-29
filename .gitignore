@@ -1,5 +1,5 @@
 # Exclude binaries
-timetrack
+time-tracking-api
 *.so
 
 # Test binary, built with `go test -c`
