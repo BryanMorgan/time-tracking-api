@@ -5,4 +5,6 @@
 ![build](https://github.com/BryanMorgan/time-tracking-api/workflows/build/badge.svg?branch=master&event=push)
 [![Go Report Card](https://goreportcard.com/badge/github.com/BryanMorgan/time-tracking-api)](https://goreportcard.com/report/github.com/BryanMorgan/time-tracking-api)
 
-Go API for tracking time. Manages time entries for tasks that are associated with projects. 
+Go API for tracking time. 
+
+Manages time entries for tasks that are associated with projects. 
