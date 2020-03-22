@@ -1,12 +1,30 @@
 application:
   hostname: localhost
+  port: 8000
+
+  delayRequestMilliSeconds: 0
+
+  # pprof
+  profileEnabled: true
+  profileHostname: localhost
+  profilePort: 8002
 
 logging:
   output: console
+  enableStacktrace: false
 
 postgres:
+  username: timemaster
+  password: timemaster-change-me
   sslmode: disable
   timeout: 2
+  connectLifetime: 2
   maxIdle: 2
   maxOpen: 4
+
+cors:
+  enabled: true
+  domains:
+    - http://localhost
+    - http://localhost:3000
 

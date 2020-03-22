@@ -1,12 +1,15 @@
 application:
   hostname: localhost
+  port: 8000
+  delayRequestMilliSeconds: 0
+  profileEnabled: false
 
 logging:
   output: production
+  enableStacktrace: false
 
 postgres:
   username: timemaster
-  password: timemaster-change-me
   database: timetracker
   sslmode: require
   timeout: 60 #seconds
@@ -16,3 +19,7 @@ postgres:
   master:
     host: localhost
     port: 5432
+
+cors:
+  enabled: false
+  maxAge: 1209600
