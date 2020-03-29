@@ -14,14 +14,17 @@ BINARY_NAME=timetrack
 
 all: run
 
-run: build test
+run: build
 	./$(BINARY_NAME)
 
 build:
 	$(GOBUILD) -v -ldflags $(LDFLAGS) -o $(BINARY_NAME)
 
-test:
-	GO_ENV=test $(GOTEST) ./... -v -parallel=10 -covermode=count
+unit_test unit:
+	GO_ENV=test $(GOTEST) ./... -parallel=10 -covermode=count #-v
+
+integration_test int:
+	GO_ENV=test $(GOTEST) -tags=integration ./integration_test
 
 vet:
 	$(GOVET) ./...
