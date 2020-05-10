@@ -18,7 +18,6 @@ const (
 )
 
 type successResponse struct {
-	Status string      `json:"status"`
 	Data   interface{} `json:"data,omitempty"`
 }
 
@@ -36,7 +35,6 @@ func JsonWithStatus(w http.ResponseWriter, r *http.Request, data interface{}, st
 	}
 
 	success := successResponse{
-		Status: SuccessStatus,
 		Data:   data,
 	}
 

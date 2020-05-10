@@ -10,9 +10,9 @@ import (
 
 func TestPing(t *testing.T) {
 	testCases := []struct {
-		name          string
-		method          string
-		statusCode    int
+		name       string
+		method     string
+		statusCode int
 	}{
 		{"Ping successful", "GET", http.StatusOK},
 		{"Invalid method", "POST", http.StatusMethodNotAllowed},
