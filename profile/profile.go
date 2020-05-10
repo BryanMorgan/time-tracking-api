@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/bryanmorgan/time-tracking-api/account"
 	"github.com/lib/pq"
 )
 
 type ProfileStatus string
 type ProfileAccountStatus string
 type AuthorizationRole string
+type AccountStatus string
 
 const (
 	ProfileNew         ProfileStatus = "new"
@@ -23,12 +23,18 @@ const (
 	ProfileAccountInvalid ProfileAccountStatus = "invalid"
 )
 
+// Account Status
+const (
+	AccountNew       AccountStatus = "new"
+	AccountValid     AccountStatus = "valid"
+	AccountArchived  AccountStatus = "archived"
+)
+
 const (
 	Owner     AuthorizationRole = "owner"
 	Admin     AuthorizationRole = "admin"
 	Reporting AuthorizationRole = "reporting"
 	User      AuthorizationRole = "user"
-	None      AuthorizationRole = "none"
 )
 
 // Profile Field Lengths
@@ -43,6 +49,17 @@ const (
 	CompanyNameMaxLength = 64
 )
 
+type Account struct {
+	AccountId       int           `json:"-" db:"account_id"`
+	Company         string        `json:"-"`
+	AccountStatus   AccountStatus `json:"-" db:"account_status"`
+	WeekStart       int           `json:"-" db:"week_start"`
+	AccountTimezone string        `json:"-" db:"account_timezone"`
+	Created         time.Time     `json:"-"`
+	Updated         time.Time     `json:"-"`
+	CloseReason     string        `json:"-" db:"close_reason"`
+}
+
 type Session struct {
 	Token           sql.NullString `json:"-"`
 	TokenExpiration pq.NullTime    `json:"-" db:"token_expiration"`
@@ -50,7 +67,7 @@ type Session struct {
 }
 
 type Profile struct {
-	account.Account
+	Account
 	Session
 	ProfileId                int                  `json:"-" db:"profile_id"`
 	FirstName                string               `json:"-" db:"first_name"`
@@ -74,3 +91,7 @@ type ForgotPassword struct {
 	ForgotPasswordToken      sql.NullString `json:"-" db:"forgot_password_token"`
 	ForgotPasswordExpiration pq.NullTime    `json:"-" db:"forgot_password_expiration"`
 }
+
+const (
+	MissingIpAddress = "0.0.0.0"
+)
