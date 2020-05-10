@@ -8,3 +8,19 @@
 Go API for tracking time. 
 
 Manages time entries for tasks that are associated with projects. 
+
+# Testing
+
+## Postman
+Additional functional tests are available using he [Postman](https://www.postman.com/) tool. 
+These tests require the [newman](https://github.com/postmanlabs/newman) Postman command-line runner. Install using:
+
+```npm install -g newman```
+
+Also relies on the `database/bootstrap.sql` data to be present. To run the Postman tests locally, first start the web server:
+
+```make run```
+
+then run the Postman tests:
+
+```make postman```

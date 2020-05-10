@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "3ebf7d2f-67c9-446a-af89-6e812151c31b",
+		"name": "Time Tracking API",
+		"description": "Functional API tests for the [Time Tracking API](https://github.com/BryanMorgan/time-tracking-api)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9ce8e75f-4768-4242-b61a-da1cd80c0de5",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.firstName).to.exist",
+							"    pm.expect(data.lastName).to.exist",
+							"    pm.expect(data.email).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aac582f2-6cf0-46ef-96ef-4d4e3d98ba15",
+						"exec": [
+							"let password = pm.variables.replaceIn('{{$randomPassword}}')",
+							"pm.variables.set(\"password\", password)",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"company\": \"{{$randomCompanyName}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"{{password}}\",\n    \"timezone\": \"America/Los_Angeles\"\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b45c7082-4cad-4ce3-ac3b-6fa696a2e8ec",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.firstName).to.exist",
+							"    pm.expect(data.lastName).to.exist",
+							"    pm.expect(data.email).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "81f007dd-f66a-45e5-83aa-d8e841d54aaa",
+						"exec": [
+							"let password = pm.variables.replaceIn('{{$randomPassword}}')",
+							"pm.variables.set(\"password\", password)",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"company\": \"{{$randomCompanyName}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"{{password}}\"\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
