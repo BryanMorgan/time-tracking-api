@@ -9,9 +9,26 @@ Go API for tracking time.
 
 Manages time entries for tasks that are associated with projects. 
 
+# Running
+To run the API server you can run the Makefile target:
+
+```make run``` 
+
+which will start the dev server on the port configured in `config/dev.yml`
+
 # Testing
 
-## Postman
+## Unit Tests
+Unit tests can be run using:
+
+```make unit_test```
+
+## Integration Tests
+Integration tests are managed under the `integration_test` root folder and can be run using:
+
+```make integration_test```
+
+## Postman Tests
 Additional functional tests are available using he [Postman](https://www.postman.com/) tool. 
 These tests require the [newman](https://github.com/postmanlabs/newman) Postman command-line runner. Install using:
 
