@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -12,6 +13,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 )
+
+var NoRowAffectedError = errors.New("no rows affected")
 
 func timeTrack(start time.Time, name string) {
 	logger.Log.Info(name, logger.Duration("duration", time.Since(start)))

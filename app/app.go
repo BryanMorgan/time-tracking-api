@@ -8,6 +8,7 @@ import (
 	"github.com/bryanmorgan/time-tracking-api/database"
 	"github.com/bryanmorgan/time-tracking-api/logger"
 	"github.com/bryanmorgan/time-tracking-api/middleware"
+	"github.com/bryanmorgan/time-tracking-api/profile"
 	"github.com/bryanmorgan/time-tracking-api/version"
 	"github.com/go-chi/chi"
 	cmiddleware "github.com/go-chi/chi/middleware"
@@ -44,6 +45,12 @@ func (a *App) Run() {
 }
 
 func newRouter(db *sqlx.DB) *chi.Mux {
+	// Create database stores
+	profileStore := profile.NewProfileAccountStore(db)
+
+	// Create API service routers
+	profileRouter := profile.NewRouter(profileStore)
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.PanicHandler)
@@ -58,6 +65,12 @@ func newRouter(db *sqlx.DB) *chi.Mux {
 	if viper.GetBool("cors.enabled") {
 		r.Use(middleware.CorsHandler)
 	}
+
+	r.Route("/api", func(r chi.Router) {
+		r.Mount("/auth", profileRouter.AuthenticationRouter())
+		r.Mount("/profile", profileRouter.ProfileRouter())
+		r.Mount("/account", profileRouter.AccountRouter())
+	})
 
 	r.Get("/_ping", middleware.Ping(db))
 
@@ -135,7 +148,7 @@ func runServers(router *chi.Mux, db *sqlx.DB) {
 	}()
 
 	// Public HTTP server
-	startMessage := fmt.Sprintf("[%s] app server started on %s with release: %s build: %s commit: %s", viper.GetString("GO_ENV"), appAddress, version.Release, version.BuildTime, version.Commit)
+	startMessage := fmt.Sprintf("[%s] app server started on %s  [release: %s] [build: %s] [commit: %s]", viper.GetString("GO_ENV"), appAddress, version.Release, version.BuildTime, version.Commit)
 	logger.Log.Info(startMessage)
 	log.Fatal(server.ListenAndServe())
 }

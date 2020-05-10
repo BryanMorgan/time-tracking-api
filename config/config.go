@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/spf13/viper"
 	"log"
+	"net/url"
 )
 
 func InitConfig() {
@@ -32,4 +33,23 @@ func InitConfig() {
 	if err != nil {
 		log.Panicf("Error in environment [%s] config file: %s\n", env, err)
 	}
+}
+
+func CreateUrl(path string, queryString string) string {
+	baseDomain := viper.GetString("application.baseDomain")
+	domainSecure := viper.GetBool("application.domainSecure")
+
+	scheme := "https"
+	if !domainSecure {
+		scheme = "http"
+	}
+
+	url := url.URL{
+		Scheme:   scheme,
+		Host:     baseDomain,
+		Path:     path,
+		RawQuery: queryString,
+	}
+
+	return url.String()
 }

@@ -1,6 +1,8 @@
 application:
   hostname: localhost
   port: 8000
+  baseDomain: localhost
+  domainSecure: false
   delayRequestMilliSeconds: 0
   profileEnabled: false
 
@@ -23,3 +25,28 @@ postgres:
 cors:
   enabled: false
   maxAge: 1209600
+
+email:
+  enabled: true
+  testMode: true # only send to `testToEmail` address
+  fromName: Time Tracker
+  emailSignatureName: The Time Tracker Team
+  fromAddress: time@example.com
+  testToEmail: test@example.com
+  sendGrid:
+    apiKey: SG.YOUR-API-KEY
+
+session:
+  cookieName: tt.session
+  tokenLength: 64
+  secret: !!!THIS_IS_VERY_SECRET!!!
+  tokenExpirationMinutes: 43200 # 60 * 24 * 30 = 30 days
+  cookieExpirationMinutes: 43200 # 60 * 24 * 30 = 30 days
+  secureCookie: false
+  maxFailedLoginAttempts: 6
+  loginFailureWindowMinutes: 5
+  profileLockDurationMinutes: 15
+  forgotPasswordTokenLength: 256
+  forgotPasswordExpirationInMinutes: 2880 # 60 * 24 * 2 = 2 days
+  addUserTokenExpirationInMinutes: 7200 # 60 * 24 * 2 = 5 days
+  clearForgotPasswordOnValidate: true  # clear the forgot_password_token and expiration when validated
