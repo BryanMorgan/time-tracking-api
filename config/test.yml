@@ -11,7 +11,7 @@ logging:
 
 postgres:
   username: timemaster
-  password: timemaster-change-me
+  password: timemasterchangeme
   sslmode: disable
   timeout: 2
   connectLifetime: 2
