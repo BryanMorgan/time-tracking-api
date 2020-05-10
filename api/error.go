@@ -12,7 +12,51 @@ const (
 	NotFound         = "NotFound"
 	MethodNotAllowed = "MethodNotAllowed"
 
+	InvalidJson        = "InvalidJson"
+	InvalidContentType = "InvalidContentType"
 	JsonEncodeFailed   = "JsonEncodeFailed"
+	SystemError        = "SystemError"
+	PaymentError       = "PaymentError"
+
+	EncryptionFailed    = "EncryptionFailed"
+	TokenCreationFailed = "TokenCreationFailed"
+
+	AccountExists        = "AccountExists"
+	SubscriptionExists   = "SubscriptionExists"
+	UpdateFailed         = "UpdateFailed"
+	AccountCreateFailed  = "AccountCreateFailed"
+	ProfileCreateFailed  = "ProfileCreateFailed"
+	EmailExistsInAccount = "EmailExistsInAccount"
+	ProfileNotFound      = "ProfileNotFound"
+	InvalidEmail         = "InvalidEmail"
+	InvalidForgotToken   = "InvalidForgotToken"
+	InvalidAccountId     = "InvalidAccountId"
+	InvalidPassword      = "InvalidPassword"
+	PasswordMismatch     = "PasswordMismatch"
+	InvalidField         = "InvalidField"
+	ProfileLocked        = "ProfileLocked"
+	NotAuthorized        = "NotAuthorized"
+
+	IncorrectPassword        = "IncorrectPassword"
+	InvalidToken             = "InvalidToken"
+	TokenExpired             = "TokenExpired"
+	MissingToken             = "MissingToken"
+	InvalidAccountForProfile = "InvalidAccountForProfile"
+	AccountSwitchFailed      = "AccountSwitchFailed"
+
+	ProfileInactive = "ProfileInactive"
+	AccountInactive = "AccountInactive"
+
+	MissingField = "MissingField"
+	FieldSize    = "FieldSize"
+
+	InvalidWeekStart = "InvalidWeekStart"
+	InvalidRole      = "InvalidRole"
+	InvalidTimezone  = "InvalidTimezone"
+
+	InvalidClient  = "InvalidClient"
+	InvalidTask    = "InvalidTask"
+	InvalidProject = "InvalidProject"
 )
 
 type Error struct {
@@ -25,6 +69,17 @@ type Error struct {
 type ErrorDetail struct {
 	Key   string
 	Value interface{}
+}
+
+func NewFieldError(errorDetail interface{}, message string, code string, field string) *Error {
+	return NewError(errorDetail, message, code, ErrorDetail{"field", field})
+}
+
+func NewErrorDetail(key string, value interface{}) ErrorDetail {
+	return ErrorDetail{
+		Key:   key,
+		Value: value,
+	}
 }
 
 // Standardize the creation and reporting of errors using a generic Err type
