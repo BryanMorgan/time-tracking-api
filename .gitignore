@@ -5,3 +5,5 @@ timetrack
 # Test binary, built with `go test -c`
 *.test
 
+# Local files
+TODO.md
