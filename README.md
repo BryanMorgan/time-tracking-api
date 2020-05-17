@@ -8,6 +8,18 @@
 Go API for tracking time. 
 
 Manages time entries for tasks that are associated with projects. 
+# Setup
+
+## Database
+Ensure you have PostgreSQL 12 or higher installed and running
+
+Create a `timetracker` database and role using the bootstrap SQL in:
+
+```./database/bootstrap.sql```
+
+The create the schema in the `timetracker` database using:
+
+```./database/schema-1.sql```
 
 # Running
 To run the API server you can run the Makefile target:
@@ -26,7 +38,7 @@ Unit tests can be run using:
 ## Integration Tests
 Integration tests are managed under the `integration_test` root folder and can be run using:
 
-```make integration_test```
+```make int_test```
 
 ## Postman Tests
 Additional functional tests are available using he [Postman](https://www.postman.com/) tool. 
