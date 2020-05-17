@@ -23,7 +23,7 @@ build:
 unit_test unit:
 	GO_ENV=test $(GOTEST) ./... -parallel=10 -covermode=count #-v
 
-integration_test int:
+int_test int:
 	GO_ENV=test $(GOTEST) -tags=integration ./integration_test
 
 postman:
