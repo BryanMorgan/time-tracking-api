@@ -27,7 +27,7 @@ integration_test int:
 	GO_ENV=test $(GOTEST) -tags=integration ./integration_test
 
 postman:
-	newman run ".postman/Time Tracking API.postman_collection.json" --bail --ignore-redirects
+	newman run ".postman/Time Tracking API.postman_collection.json" -e ".postman/Localhost.postman_environment.json" --bail
 
 vet:
 	$(GOVET) ./...
