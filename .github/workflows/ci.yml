@@ -28,6 +28,15 @@ jobs:
         GO_ENV: test
 
     - name: Integration Tests
-      run: make integration_test
+      run: make int_test
       env:
         GO_ENV: test
+
+  newman:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: matt-ball/newman-action@master
+      with:
+        collection: ./postman/Time Tracking API.postman_collection.json
+        environment: ./postman/Localhost.postman_environment.json
