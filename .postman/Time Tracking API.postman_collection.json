@@ -25,7 +25,12 @@
 							"    pm.expect(data.lastName).to.exist",
 							"    pm.expect(data.email).to.exist",
 							"    pm.expect(data.company).to.exist",
-							"});"
+							"});",
+							"",
+							"const cookies = pm.response.headers.all().filter(headerObj => headerObj.key === 'Set-Cookie').map(headerObj => headerObj.value);",
+							"pm.collectionVariables.set(\"session.cookies\", cookies)",
+							"",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -35,9 +40,10 @@
 					"script": {
 						"id": "aac582f2-6cf0-46ef-96ef-4d4e3d98ba15",
 						"exec": [
+							"let email = pm.variables.replaceIn('{{$randomEmail}}')",
 							"let password = pm.variables.replaceIn('{{$randomPassword}}')",
-							"pm.variables.set(\"password\", password)",
-							""
+							"pm.collectionVariables.set(\"password\", password)",
+							"pm.collectionVariables.set(\"email\", email);"
 						],
 						"type": "text/javascript"
 					}
@@ -54,15 +60,73 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"company\": \"{{$randomCompanyName}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"{{password}}\",\n    \"timezone\": \"America/Los_Angeles\"\n}\n"
+					"raw": "{\n    \"company\": \"{{$randomCompanyName}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"timezone\": \"America/Los_Angeles\"\n}\n"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/account",
-					"protocol": "http",
+					"raw": "{{base_url}}/api/account",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8000",
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Error: Create Account (no email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "abefaf66-4d72-4649-a5f5-8ba728c6a1d9",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data.status).to.eql('error')",
+							"    pm.expect(data.error).to.eql('invalid input')",
+							"    pm.expect(data.code).to.eql('InvalidEmail')",
+							"    pm.expect(data.detail.field).to.eql(\"email\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "89d24d15-7504-46b2-b00c-329276605187",
+						"exec": [
+							"let password = pm.collectionVariables.get(\"password\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"password\": \"{{password}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/account",
+					"host": [
+						"{{base_url}}"
+					],
 					"path": [
 						"api",
 						"account"
@@ -86,6 +150,69 @@
 							"pm.test(\"Response data is correct\", function () {",
 							"    let data = pm.response.json().data",
 							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.company).to.exist",
+							"    pm.expect(data.weekStart).to.exist",
+							"    pm.expect(data.timezone).to.exist",
+							"    pm.expect(data.created).to.exist",
+							"    pm.expect(data.updated).to.exist",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "81f007dd-f66a-45e5-83aa-d8e841d54aaa",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/account",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ef979a52-a294-4e4e-97c3-f7feff8008df",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
 							"    pm.expect(data.firstName).to.exist",
 							"    pm.expect(data.lastName).to.exist",
 							"    pm.expect(data.email).to.exist",
@@ -98,10 +225,134 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "81f007dd-f66a-45e5-83aa-d8e841d54aaa",
+						"id": "660d127c-f98a-4aa7-b4cb-c9990155d12a",
 						"exec": [
-							"let password = pm.variables.replaceIn('{{$randomPassword}}')",
-							"pm.variables.set(\"password\", password)",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Error: 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a46052d8-94d7-43bd-8405-95942aaed999",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data.status).to.eql('error')",
+							"    pm.expect(data.error).to.eql('Not Found')",
+							"    pm.expect(data.code).to.eql('NotFound')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6908d49-4bb9-48b9-b31d-62ea082946e0",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/invalid-url",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"invalid-url"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bb1006d1-1c7c-422c-b669-b828e6a446ed",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.firstName).to.exist",
+							"    pm.expect(data.lastName).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});",
+							"",
+							"const cookies = pm.response.headers.all().filter(headerObj => headerObj.key === 'Set-Cookie').map(headerObj => headerObj.value);",
+							"pm.collectionVariables.set(\"session.cookies\", cookies)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "441cba87-37e5-49d3-9605-5a1f5d41f1c5",
+						"exec": [
+							"let password = pm.collectionVariables.get(\"password\")",
+							"let email = pm.collectionVariables.get(\"email\");",
 							""
 						],
 						"type": "text/javascript"
@@ -113,28 +364,425 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Error: Login (invalid password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cbf9f98b-0b03-491c-93a4-22e4ba6886e6",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data.status).to.eql('error')",
+							"    pm.expect(data.code).to.eql('IncorrectPassword')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a1403d3-df0c-490b-b151-c3b26b180b4d",
+						"exec": [
+							"let email = pm.collectionVariables.get(\"email\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"THIS_PASSWORD_IS_INCORRECT!\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "062b9c46-37c9-493b-a6f9-3551b0be0164",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.firstName).to.exist",
+							"    pm.expect(data.lastName).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "43c74fd4-c462-4f87-9399-470830a1055e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/auth/token",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Error: Token (invalid token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "51b4c66e-657c-44c5-b101-5b3ba7389256",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data.status).to.eql('error')",
+							"    pm.expect(data.code).to.eql('InvalidToken')",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7325fd8d-f6bc-451d-ada4-4912153e1782",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer: THIS-IS-INVALID"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/auth/token",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Profile Password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9a6af73-6868-471c-85d7-41744f1a19a1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});",
+							"",
+							"// Ensure we can run this multiple times by resetting the password",
+							"pm.collectionVariables.set(\"password\", pm.collectionVariables.get(\"newPassword\"))",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f1ff571b-87cb-4db1-9856-a18932a13799",
+						"exec": [
+							"pm.collectionVariables.set(\"newPassword\", pm.variables.replaceIn('{{$randomPassword}}'))",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"company\": \"{{$randomCompanyName}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"{{password}}\"\n}\n"
+					"raw": "{\n    \"currentPassword\": \"{{password}}\",\n    \"password\": \"{{newPassword}}\",\n    \"confirmPassword\": \"{{newPassword}}\"\n}\n"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/account",
-					"protocol": "http",
+					"raw": "{{base_url}}/api/profile/password",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8000",
 					"path": [
 						"api",
-						"account"
+						"profile",
+						"password"
 					]
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f7caa0e-31df-475e-91a2-d509fb3c30a9",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "70361e34-ff48-405f-bff5-5572011ca3f5",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/auth/logout",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Error: Get User (no token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dd32492a-61da-4bb6-89fe-ae347f668724",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data.status).to.eql('error')",
+							"    pm.expect(data.code).to.eql('MissingToken')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5b70d5b3-fbc5-4ed5-b74a-f65b0d49fd91",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "ec4b732a-a01e-41e5-afe5-6053f14a6c1a",
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "a76208fd-411d-4acf-b56b-7d36c6ae7159",
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "6226e9ad-f6d8-4ccc-a6b0-c3674a8a4124",
+			"key": "tt.session",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "80e554ee-1168-4f2b-b67f-4c15f184c23a",
+			"key": "session.cookies",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "7ca809ab-dc24-4cc3-b71a-241c47b1a2d6",
+			"key": "newPassword",
+			"value": "",
+			"type": "string"
 		}
 	],
 	"protocolProfileBehavior": {}
