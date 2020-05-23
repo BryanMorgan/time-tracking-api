@@ -35,8 +35,10 @@ func InitConfig() {
 	}
 }
 
+// Create a URL to the client/application site
 func CreateUrl(path string, queryString string) string {
-	baseDomain := viper.GetString("application.baseDomain")
+	hostname := viper.GetString("application.applicationDomain")
+	port := viper.GetString("application.applicationDomainPort")
 	domainSecure := viper.GetBool("application.domainSecure")
 
 	scheme := "https"
@@ -44,9 +46,13 @@ func CreateUrl(path string, queryString string) string {
 		scheme = "http"
 	}
 
+	if port != "" {
+		hostname += ":" + port
+	}
+
 	url := url.URL{
 		Scheme:   scheme,
-		Host:     baseDomain,
+		Host:     hostname,
 		Path:     path,
 		RawQuery: queryString,
 	}

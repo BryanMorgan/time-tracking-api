@@ -126,7 +126,7 @@ func (pr *ProfileRouter) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	AddSessionCookie(w, userProfile.Token.String, viper.GetString("application.baseDomain"))
+	AddSessionCookie(w, userProfile.Token.String, viper.GetString("application.applicationDomain"))
 	api.Json(w, r, NewAuthResponse(userProfile))
 }
 
@@ -142,7 +142,7 @@ func (pr *ProfileRouter) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ClearSessionCookie(w, viper.GetString("application.baseDomain"))
+	ClearSessionCookie(w, viper.GetString("application.applicationDomain"))
 	api.Json(w, r, nil)
 }
 
@@ -276,7 +276,7 @@ func TokenHandler(next http.Handler) http.Handler {
 
 		// Add/UpdateAccount the session cookie
 		if !strings.Contains(r.URL.Path, "/api/auth/logout") {
-			AddSessionCookie(w, token, viper.GetString("application.baseDomain"))
+			AddSessionCookie(w, token, viper.GetString("application.applicationDomain"))
 		}
 
 		ctx := context.WithValue(r.Context(), config.TokenContextKey, token)
@@ -522,7 +522,7 @@ func (pr *ProfileRouter) createAccountHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	AddSessionCookie(w, newUser.Token.String, viper.GetString("application.baseDomain"))
+	AddSessionCookie(w, newUser.Token.String, viper.GetString("application.applicationDomain"))
 	api.Json(w, r, NewProfileResponse(newUser))
 }
 

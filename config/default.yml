@@ -1,7 +1,8 @@
 application:
   hostname: localhost
   port: 8000
-  baseDomain: localhost
+  applicationDomain: localhost
+  applicationDomainPort: 3000
   domainSecure: false
   delayRequestMilliSeconds: 0
   profileEnabled: false
