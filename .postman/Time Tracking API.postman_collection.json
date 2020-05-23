@@ -261,6 +261,144 @@
 			"response": []
 		},
 		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6833a51a-15ea-4141-9f13-9518d12460e6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.firstName).to.exist",
+							"    pm.expect(data.lastName).to.exist",
+							"    pm.expect(data.email).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "84adcba5-6675-4737-91d6-37fe3877628b",
+						"exec": [
+							"let email = pm.variables.replaceIn('{{$randomEmail}}')",
+							"pm.collectionVariables.set(\"email\", email);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{email}}\",\n    \"timezone\": \"America/New_York\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "28daca46-177e-4e50-9d59-05ac2e8f8a19",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.weekStart).to.exist",
+							"    pm.expect(data.timezone).to.exist",
+							"    pm.expect(data.created).to.exist",
+							"    pm.expect(data.updated).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "23492f73-e29f-4a9c-93ea-a4bc86fb7e95",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"company\": \"{{$randomCompanyName}}\",\n    \"timezone\": \"America/Los_Angeles\",\n    \"weekStart\": 2\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/account",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Error: 404",
 			"event": [
 				{
@@ -639,6 +777,70 @@
 			"response": []
 		},
 		{
+			"name": "Forgot Password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "32727c4d-0801-4fe8-80fd-a273c333e01a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "502aefe5-0f88-4d5a-b44d-828fea3c6bfb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/forgot",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"forgot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Logout",
 			"event": [
 				{
@@ -724,7 +926,13 @@
 					"script": {
 						"id": "5b70d5b3-fbc5-4ed5-b74a-f65b0d49fd91",
 						"exec": [
-							""
+							"const jar = pm.cookies.jar();",
+							"",
+							"let domain = pm.variables.replaceIn('{{base_url}}')",
+							"",
+							"jar.clear(domain, function (error) {",
+							"    console.log(\"cleared for \" + domain)",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -755,31 +963,31 @@
 	],
 	"variable": [
 		{
-			"id": "ec4b732a-a01e-41e5-afe5-6053f14a6c1a",
+			"id": "84ad856d-96dc-4bec-aade-3d102ac90a5b",
 			"key": "email",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "a76208fd-411d-4acf-b56b-7d36c6ae7159",
+			"id": "42b636bf-ff60-4f91-853e-c3c30a65b732",
 			"key": "password",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "6226e9ad-f6d8-4ccc-a6b0-c3674a8a4124",
+			"id": "32eefd6b-b06a-4185-8a9a-9d743ba34c47",
 			"key": "tt.session",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "80e554ee-1168-4f2b-b67f-4c15f184c23a",
+			"id": "21473bae-18c5-4117-a3ae-fdfba87e206a",
 			"key": "session.cookies",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "7ca809ab-dc24-4cc3-b71a-241c47b1a2d6",
+			"id": "86bb71bc-419e-448d-9141-d48c1634625f",
 			"key": "newPassword",
 			"value": "",
 			"type": "string"
