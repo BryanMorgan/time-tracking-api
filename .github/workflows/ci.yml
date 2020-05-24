@@ -63,7 +63,7 @@ jobs:
     - name: Run Application
       run: |
         make run &
-        npx wait-on http://localhost:8000
+        npx wait-on http-get://localhost:8000/_ping
 
     - name: Postman Integration Tests
       run: make postman
