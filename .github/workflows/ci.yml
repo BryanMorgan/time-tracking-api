@@ -49,7 +49,7 @@ jobs:
         psql -h localhost -d ${{ job.services.postgres.env.POSTGRES_DB }} -a -f ./database/schema-1.sql
       env:
         PGUSER: ${{ job.services.postgres.env.POSTGRES_USER }}
-        PGPASSWORD: ${{ jobs.services.postgres.env.POSTGRES_PASSWORD }}
+        PGPASSWORD: ${{ job.services.postgres.env.POSTGRES_PASSWORD }}
 
     - name: Integration Tests
       run: make int_test
