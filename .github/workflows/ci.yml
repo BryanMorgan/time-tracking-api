@@ -17,6 +17,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: timetracker
+          POSTGRES_PORT: 5432
           options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
@@ -37,20 +38,21 @@ jobs:
       env:
         GO_ENV: test
 
+    - name: Install Libraries
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y postgresql-client
     - name: Bootstrap PostgreSQL
-      run: docker exec -d postgres psql -a -f ./database/bootstrap.sql
-      env:
-        POSTGRES_HOST: postgres
-        POSTGRES_PORT: 5432
+      run: |
+        echo "Postgres"
+        psql -h localhost -U postgres -a -f ./database/bootstrap.sql
 
     - name: Create PostgreSQL schema
-      run: docker exec -d postgres psql -d timetracker -a -f ./database/schema-1.sql
-      env:
-        POSTGRES_HOST: postgres
-        POSTGRES_PORT: 5432
+      run: |
+        echo "Postgres"
+        psql -h localhost -U postgres -d timetracker -a -f ./database/schema-1.sql
 
     - name: Integration Tests
       run: make int_test
       env:
         GO_ENV: test
-
