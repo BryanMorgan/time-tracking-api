@@ -8,11 +8,6 @@ jobs:
 
   build-test:
     runs-on: ubuntu-latest
-    env:
-      POSTGRES_DB: timetracker
-      POSTGRES_USER: timemaster
-      POSTGRES_PASSWORD: timemasterchangeme
-      POSTGRES_PORT: 5432
 
     services:
       postgres:  # Label used to access the service container
@@ -20,6 +15,11 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          POSTGRES_DB: timetracker
+          POSTGRES_USER: timemaster
+          POSTGRES_PASSWORD: timemasterchangeme
+          POSTGRES_PORT: 5432
 
     steps:
     - name: Set up Go 1.14
@@ -46,10 +46,10 @@ jobs:
 
     - name: Create PostgreSQL schema
       run: |
-        psql -h localhost -d ${{ env.POSTGRES_DB }} -a -f ./database/schema-1.sql
+        psql -h localhost -d timetracker -a -f ./database/schema-1.sql
       env:
-        PGUSER: ${{ env.POSTGRES_USER }}
-        PGPASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        PGUSER: timemaster
+        PGPASSWORD: timemasterchangeme
 
     - name: Build
       run: make build
