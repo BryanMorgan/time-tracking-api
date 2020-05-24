@@ -16,9 +16,9 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
+          POSTGRES_DB: timetracker
           POSTGRES_USER: timemaster
           POSTGRES_PASSWORD: timemasterchangeme
-          POSTGRES_DB: timetracker
           POSTGRES_PORT: 5432
 
     steps:
@@ -46,10 +46,10 @@ jobs:
 
     - name: Create PostgreSQL schema
       run: |
-        psql -h localhost -d ${{ job.services.postgres.env.POSTGRES_DB }} -a -f ./database/schema-1.sql
+        psql -h localhost -d timetracker -a -f ./database/schema-1.sql
       env:
-        PGUSER: ${{ job.services.postgres.env.POSTGRES_USER }}
-        PGPASSWORD: ${{ job.services.postgres.env.POSTGRES_PASSWORD }}
+        PGUSER: timemaster
+        PGPASSWORD: timemasterchangeme
 
     - name: Integration Tests
       run: make int_test
