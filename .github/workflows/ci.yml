@@ -42,7 +42,7 @@ jobs:
     - name: Install Libraries
       run: |
         sudo apt-get update
-        sudo apt-get install -y postgresql-client-12
+        sudo apt-get install -y postgresql-client
 
     - name: Bootstrap PostgreSQL
       run: |
