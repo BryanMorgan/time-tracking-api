@@ -44,21 +44,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y postgresql-client
 
-    - name: Bootstrap PostgreSQL
-      run: |
-        echo "Postgres"
-        psql -a -f ./database/bootstrap.sql
-      env:
-        POSTGRES_HOST: localhost
-        POSTGRES_PORT: 5432
-
     - name: Create PostgreSQL schema
       run: |
         echo "Postgres"
-        psql -d timetracker -a -f ./database/schema-1.sql
+        psql -h localhost -U postgres -d timetracker -a -f ./database/schema-1.sql
       env:
-        POSTGRES_HOST: localhost
-        POSTGRES_PORT: 5432
+        PGPASSWORD: postgres
 
     - name: Integration Tests
       run: make int_test
