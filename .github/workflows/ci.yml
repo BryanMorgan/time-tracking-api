@@ -47,11 +47,12 @@ jobs:
     - name: Create PostgreSQL schema
       run: |
         echo "Postgres"
-        psql -h localhost -U postgres -d timetracker -a -f ./database/schema-1.sql
+        psql -h localhost -d timetracker -a -f ./database/schema-1.sql
       env:
+        PGUSER: postgres
         PGPASSWORD: postgres
 
     - name: Integration Tests
       run: make int_test
       env:
-        GO_ENV: test
+        GO_ENV: github-actions

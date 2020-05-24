@@ -1,0 +1,12 @@
+logging:
+  output: console
+  enableStacktrace: false
+
+postgres:
+  username: postgres
+  password: postgres
+  sslmode: disable
+  timeout: 120
+  connectLifetime: 240
+  maxIdle: 1
+  maxOpen: 4
