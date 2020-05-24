@@ -12,16 +12,14 @@ jobs:
     services:
       postgres:  # Label used to access the service container
         image: postgres
+        options: --name=postgres
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          POSTGRES_DB: timetracker
+          options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-
     - name: Set up Go 1.14
       uses: actions/setup-go@v1
       with:
@@ -40,13 +38,13 @@ jobs:
         GO_ENV: test
 
     - name: Bootstrap PostgreSQL
-      run: psql  -a -f ./database/bootstrap.sql
+      run: docker exec -d postgres psql -a -f ./database/bootstrap.sql
       env:
         POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
 
     - name: Create PostgreSQL schema
-      run: psql -d timetracker -a -f ./database/schema-1.sql
+      run: docker exec -d postgres psql -d timetracker -a -f ./database/schema-1.sql
       env:
         POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
