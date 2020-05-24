@@ -46,11 +46,10 @@ jobs:
 
     - name: Create PostgreSQL schema
       run: |
-        echo "Postgres"
-        psql -h localhost -d timetracker -a -f ./database/schema-1.sql
+        psql -h localhost -d ${{ services.postgres.env.POSTGRES_DB }} -a -f ./database/schema-1.sql
       env:
-        PGUSER: postgres
-        PGPASSWORD: postgres
+        PGUSER: ${{ services.postgres.env.POSTGRES_USER }}
+        PGPASSWORD: ${{ services.postgres.env.POSTGRES_PASSWORD }}
 
     - name: Integration Tests
       run: make int_test
