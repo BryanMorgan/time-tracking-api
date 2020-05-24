@@ -60,5 +60,8 @@ jobs:
     - name: Integration Tests
       run: make int_test
 
+    - name: Run Application
+      run: make run
+
     - name: Postman Integration Tests
       run: make postman
