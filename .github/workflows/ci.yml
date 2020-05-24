@@ -16,8 +16,8 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: timemaster
+          POSTGRES_PASSWORD: timemasterchangeme
           POSTGRES_DB: timetracker
           POSTGRES_PORT: 5432
 
@@ -54,5 +54,3 @@ jobs:
 
     - name: Integration Tests
       run: make int_test
-      env:
-        GO_ENV: github-actions
