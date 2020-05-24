@@ -11,14 +11,15 @@ jobs:
 
     services:
       postgres:  # Label used to access the service container
-        image: postgres
-        options: --name=postgres
+        image: postgres:12
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: timetracker
           POSTGRES_PORT: 5432
-          options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - name: Set up Go 1.14
@@ -41,16 +42,23 @@ jobs:
     - name: Install Libraries
       run: |
         sudo apt-get update
-        sudo apt-get install -y postgresql-client
+        sudo apt-get install -y postgresql-client-12
+
     - name: Bootstrap PostgreSQL
       run: |
         echo "Postgres"
         psql -h localhost -U postgres -a -f ./database/bootstrap.sql
+      env:
+        POSTGRES_HOST: localhost
+        POSTGRES_PORT: 5432
 
     - name: Create PostgreSQL schema
       run: |
         echo "Postgres"
         psql -h localhost -U postgres -d timetracker -a -f ./database/schema-1.sql
+      env:
+        POSTGRES_HOST: localhost
+        POSTGRES_PORT: 5432
 
     - name: Integration Tests
       run: make int_test
