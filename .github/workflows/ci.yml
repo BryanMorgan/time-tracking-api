@@ -63,7 +63,7 @@ jobs:
     - name: Run Application
       uses: cypress-io/github-action@v1
       with:
-        start: make run
+        command: make run
         wait-on: http://localhost:8000
 
     - name: Postman Integration Tests
