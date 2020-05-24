@@ -61,8 +61,8 @@ jobs:
       run: make int_test
 
     - name: Run Application
+      run: make run
       with:
-        start: make run
         wait-on: http://localhost:8000
 
     - name: Postman Integration Tests
