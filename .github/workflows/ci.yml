@@ -47,7 +47,7 @@ jobs:
     - name: Bootstrap PostgreSQL
       run: |
         echo "Postgres"
-        psql -h localhost -U postgres -a -f ./database/bootstrap.sql
+        psql -a -f ./database/bootstrap.sql
       env:
         POSTGRES_HOST: localhost
         POSTGRES_PORT: 5432
@@ -55,7 +55,7 @@ jobs:
     - name: Create PostgreSQL schema
       run: |
         echo "Postgres"
-        psql -h localhost -U postgres -d timetracker -a -f ./database/schema-1.sql
+        psql -d timetracker -a -f ./database/schema-1.sql
       env:
         POSTGRES_HOST: localhost
         POSTGRES_PORT: 5432
