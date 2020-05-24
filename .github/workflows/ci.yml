@@ -61,7 +61,9 @@ jobs:
       run: make int_test
 
     - name: Run Application
-      run: make run && npx wait-on http://localhost:8000
+      run: |
+        make run &
+        npx wait-on http://localhost:8000
 
     - name: Postman Integration Tests
       run: make postman
