@@ -199,6 +199,201 @@
 			"response": []
 		},
 		{
+			"name": "Account Add user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8266cfe5-7215-4fd9-bdd9-bfbb5205771c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.firstName).to.exist",
+							"    pm.expect(data.lastName).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "eaf6d8ab-5e83-401d-ac2f-d547f7a3481d",
+						"exec": [
+							"let additionalUserEmail = pm.variables.replaceIn('{{$randomEmail}}')",
+							"pm.collectionVariables.set(\"additionalUserEmail\", additionalUserEmail);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{additionalUserEmail}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/account/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3e790dd5-c67d-4521-af9e-cd5c1426af1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data[0].firstName).to.exist",
+							"    pm.expect(data[0].lastName).to.exist",
+							"    pm.expect(data[0].email).to.exist",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7d89dc66-ed3d-46c1-a2b0-9f4ed79aa212",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/account/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account Remove user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d027db95-4781-4292-b621-088a26d08b07",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data).to.eql({})",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "be8b250a-f3e8-4054-8d75-901181c4a360",
+						"exec": [
+							"let password = pm.collectionVariables.get(\"additionalUserEmail\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{additionalUserEmail}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/account/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get User",
 			"event": [
 				{
@@ -959,36 +1154,234 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Create Account to Close",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "536342a3-58cf-437e-ab2f-ae51e85b9bf3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.status).to.not.eql('error')",
+							"    pm.expect(data.firstName).to.exist",
+							"    pm.expect(data.lastName).to.exist",
+							"    pm.expect(data.email).to.exist",
+							"    pm.expect(data.company).to.exist",
+							"});",
+							"",
+							"const cookies = pm.response.headers.all().filter(headerObj => headerObj.key === 'Set-Cookie').map(headerObj => headerObj.value);",
+							"pm.collectionVariables.set(\"session.cookies\", cookies)",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b4de1d2b-fd34-448f-b158-6de420fe2976",
+						"exec": [
+							"let email = pm.variables.replaceIn('{{$randomEmail}}')",
+							"let password = pm.variables.replaceIn('{{$randomPassword}}')",
+							"pm.collectionVariables.set(\"password\", password)",
+							"pm.collectionVariables.set(\"email\", email);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"company\": \"{{$randomCompanyName}}\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"timezone\": \"America/Los_Angeles\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/account",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Close Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0ff78989-24d8-458c-b58a-e3fa56af6d6f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7763fef4-ddf2-4e24-bea8-12bb59e11815",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reason\": \"{{$randomPhrase}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/account",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Error: Get Account (not active)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "35abf2e9-51cf-478b-8137-e57431a2bdce",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data.status).to.eql('error')",
+							"    pm.expect(data.code).to.eql('AccountInactive')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b3a1f712-0cf9-4723-955c-5847c5d95889",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/account",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
 		{
-			"id": "84ad856d-96dc-4bec-aade-3d102ac90a5b",
+			"id": "754602f0-d411-467b-a70b-c944fad569db",
 			"key": "email",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "42b636bf-ff60-4f91-853e-c3c30a65b732",
+			"id": "f80fb14a-8ac2-455f-952f-14509ec5b23e",
 			"key": "password",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "32eefd6b-b06a-4185-8a9a-9d743ba34c47",
+			"id": "94075ad2-fb0f-4297-920e-f045b3c756c2",
 			"key": "tt.session",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "21473bae-18c5-4117-a3ae-fdfba87e206a",
+			"id": "412bb16a-1a67-4064-ab09-df162645e8fa",
 			"key": "session.cookies",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "86bb71bc-419e-448d-9141-d48c1634625f",
+			"id": "5243b713-b506-4e2a-8355-184c4b3d8130",
 			"key": "newPassword",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1357256c-7ccf-4461-bc13-f469d5a81768",
+			"key": "additionalUserEmail",
 			"value": "",
 			"type": "string"
 		}
