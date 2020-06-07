@@ -624,7 +624,7 @@ func (pr *ProfileRouter) getAccountHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	if accountData == nil {
-		api.ErrorJson(w, api.NewError(nil, "No account updated", api.SystemError), http.StatusInternalServerError)
+		api.ErrorJson(w, api.NewError(nil, "No account found", api.AccountInactive), http.StatusBadRequest)
 		return
 	}
 
@@ -667,8 +667,7 @@ func (pr *ProfileRouter) addUserHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	if !IsRole(newUserRequest.Role) {
-		badInputs(w, "Invalid role", api.InvalidRole, "role")
-		return
+		newUserRequest.Role = "user"
 	}
 
 	newUser, appError := pr.profileService.AddUser(&newUserRequest, &accountProfile.Account)
@@ -729,12 +728,12 @@ func (pr *ProfileRouter) removeUserHandler(w http.ResponseWriter, r *http.Reques
 	}
 	defer api.CloseBody(r.Body)
 
-	if removeUserRequest.UserId <= 0 {
-		badInputs(w, "Invalid userId", api.InvalidField, "userId")
+	if valid.IsNull(removeUserRequest.Email) {
+		badInputs(w, "Invalid email", api.InvalidField, "email")
 		return
 	}
 
-	appError := pr.profileService.RemoveUser(removeUserRequest.UserId, &accountProfile.Account)
+	appError := pr.profileService.RemoveUser(removeUserRequest.Email, &accountProfile.Account)
 	if appError != nil {
 		api.ErrorJson(w, appError, http.StatusBadRequest)
 		return

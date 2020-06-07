@@ -393,7 +393,7 @@ func (pa *ProfileData) GetAccount(accountId int) (*Account, error) {
 	var err error
 	account := Account{}
 
-	accountRow := pa.db.QueryRowx("SELECT * FROM account WHERE account_id = $1", accountId)
+	accountRow := pa.db.QueryRowx("SELECT * FROM account WHERE account_id = $1 AND account_status != $2", accountId, AccountArchived)
 	if accountRow.Err() != nil {
 		logger.Log.Error("Failed to find account by id: " + accountRow.Err().Error())
 		return nil, accountRow.Err()
@@ -585,7 +585,7 @@ func (pa *ProfileData) RemoveUser(accountId int, userId int) error {
 func (pa *ProfileData) CloseAccount(accountId int, reason string) error {
 	updateAccountSql := `UPDATE account SET account_status=$1, close_reason=$2 WHERE account_id=$3`
 
-	result, err := pa.db.Exec(updateAccountSql, AccountArchived, accountId, reason)
+	result, err := pa.db.Exec(updateAccountSql, AccountArchived,reason, accountId)
 	if err != nil {
 		return err
 	}

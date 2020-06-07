@@ -50,7 +50,7 @@ type AddUserRequest struct {
 }
 
 type RemoveUserRequest struct {
-	UserId int
+	Email string
 }
 type ProfileResource struct {
 	store ProfileStore
@@ -68,7 +68,7 @@ type ProfileService interface {
 	GetProfileByToken(token string) (*Profile, *api.Error)
 	Create(*AccountRequest) (*Account, *Profile, *api.Error)
 	AddUser(*AddUserRequest, *Account) (*Profile, *api.Error)
-	RemoveUser(userId int, account *Account) *api.Error
+	RemoveUser(email string, account *Account) *api.Error
 	UpdateProfile(updatedProfile *Profile, existingProfile *Profile) *api.Error
 	UpdateTokenExpiration(token string, expiration time.Time) *api.Error
 	UpdatePassword(profileId int, currentPassword string, password string, confirmPassword string) *api.Error
@@ -588,8 +588,24 @@ func (pr *ProfileResource) GetProfileByToken(token string) (*Profile, *api.Error
 	return profileAccount, nil
 }
 
-func (pr *ProfileResource) RemoveUser(userId int, account *Account) *api.Error {
-	err := pr.store.RemoveUser(account.AccountId, userId)
+func (pr *ProfileResource) RemoveUser(email string, account *Account) *api.Error {
+	email = strings.ToLower(email)
+	user, err := pr.store.GetByEmail(email)
+	if err != nil {
+		return api.NewError(err, "Failed to find user in account", api.SystemError)
+	}
+
+	logger.Log.Warn("email: " + email)
+	logger.Log.Warn(fmt.Sprintf("user: %v", user))
+	if user == nil {
+		return api.NewError(err, "Failed to find user in account", api.ProfileNotFound)
+	}
+
+	if user.AccountId != account.AccountId {
+		return api.NewError(err, "Failed to find user in account", api.ProfileNotFound)
+	}
+
+	err = pr.store.RemoveUser(account.AccountId, user.ProfileId)
 	if err != nil {
 		return api.NewError(err, "Failed to remove user from account", api.SystemError)
 	}
