@@ -972,6 +972,275 @@
 			"response": []
 		},
 		{
+			"name": "Create Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0f2d5e3b-a303-43d9-bf52-87cdd0385780",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.id).to.exist",
+							"    pm.expect(data.name).to.exist",
+							"",
+							"    pm.collectionVariables.set(\"clientId\", data.id)",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2e0cc13e-54ea-41a8-97a7-30c1a7124038",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomCompanyName}}\",\n    \"address\": \"{{$randomStreetAddress}}\"\n}\n",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7a3ccc7d-067e-4da0-93f6-49ce3f44f82d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.id).to.exist",
+							"    pm.expect(data.name).to.exist",
+							"",
+							"    pm.collectionVariables.set(\"clientId\", data.id)",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1c6a44b4-9a86-4316-882e-b4698344b093",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/client/{{clientId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Clients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d39c9c1e-e9d0-4325-936d-ff4aa011a120",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data[0].id).to.exist",
+							"    pm.expect(data[0].name).to.exist",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "33ea0e8c-04d1-44ad-966b-8d4773582f18",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/client/all",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "95be923f-ad5d-4950-86f9-93cdb0de2237",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"let clientId = parseInt(pm.variables.replaceIn('{{clientId}}'))",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.id).to.exist",
+							"    pm.expect(data.name).to.exist",
+							"    pm.expect(data.active).to.eq(true)",
+							"    pm.expect(data.clientId).to.eq(clientId)",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "254c1cb5-4dbf-4ed8-b20a-6993f8c31a76",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomProductName}}\",\n    \"clientId\": {{clientId}}\n}\n",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client/project",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Forgot Password",
 			"event": [
 				{
@@ -1350,38 +1619,44 @@
 	],
 	"variable": [
 		{
-			"id": "754602f0-d411-467b-a70b-c944fad569db",
+			"id": "262570f7-6dcb-4c4f-a096-b664f0a65c9a",
 			"key": "email",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "f80fb14a-8ac2-455f-952f-14509ec5b23e",
+			"id": "3d7fe326-6c2c-4a46-8fb2-6726e71aa3d3",
 			"key": "password",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "94075ad2-fb0f-4297-920e-f045b3c756c2",
+			"id": "42bc1729-ebf7-4a62-9a16-95a7c4a39a1b",
 			"key": "tt.session",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "412bb16a-1a67-4064-ab09-df162645e8fa",
+			"id": "63c1b4be-2ebc-4335-8f9b-34fe0dc3198d",
 			"key": "session.cookies",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "5243b713-b506-4e2a-8355-184c4b3d8130",
+			"id": "32d571d0-ec8e-4ad9-ae96-2ede0236af51",
 			"key": "newPassword",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "1357256c-7ccf-4461-bc13-f469d5a81768",
+			"id": "05518c33-b281-45c0-8c65-b1cf316818f9",
 			"key": "additionalUserEmail",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "07cad489-9c01-4e73-8387-d6b44b636b34",
+			"key": "clientId",
 			"value": "",
 			"type": "string"
 		}
