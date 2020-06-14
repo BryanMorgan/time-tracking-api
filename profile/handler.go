@@ -3,7 +3,6 @@ package profile
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -78,11 +77,11 @@ type SetupNewUserRequest struct {
 }
 
 type AuthResponse struct {
-	Id               int    `json:"id,omitempty"`
-	FirstName        string `json:"firstName"`
-	LastName         string `json:"lastName"`
-	Company          string `json:"company"`
-	WeekStart        int    `json:"weekStart"`
+	Id        int    `json:"id,omitempty"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Company   string `json:"company"`
+	WeekStart int    `json:"weekStart"`
 }
 
 type AccountIdRequest struct {
@@ -106,17 +105,17 @@ func (pr *ProfileRouter) loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Validate fields
 	if !valid.IsEmail(loginRequest.Email) {
-		badInputs(w, "Invalid email", api.InvalidEmail, "email")
+		api.BadInputs(w, "Invalid email", api.InvalidEmail, "email")
 		return
 	}
 
 	if !valid.IsLength(loginRequest.Email, EmailMinLength, EmailMaxLength) {
-		badInputs(w, "Invalid email length", api.FieldSize, "email")
+		api.BadInputs(w, "Invalid email length", api.FieldSize, "email")
 		return
 	}
 
 	if !valid.IsLength(loginRequest.Password, PasswordMinLength, PasswordMaxLength) {
-		badInputs(w, "Invalid password length", api.FieldSize, "password")
+		api.BadInputs(w, "Invalid password length", api.FieldSize, "password")
 		return
 	}
 
@@ -164,7 +163,7 @@ func (pr *ProfileRouter) forgotPasswordHandler(w http.ResponseWriter, r *http.Re
 
 	// Validate fields
 	if !valid.IsEmail(emailRequest.Email) {
-		badInputs(w, "Invalid email", api.InvalidEmail, "email")
+		api.BadInputs(w, "Invalid email", api.InvalidEmail, "email")
 		return
 	}
 
@@ -192,7 +191,7 @@ func (pr *ProfileRouter) validateForgotTokenHandler(w http.ResponseWriter, r *ht
 
 	// Validate fields
 	if valid.IsNull(tokenRequest.ForgotPasswordToken) {
-		badInputs(w, "Invalid forgot password token", api.InvalidForgotToken, "forgotPasswordToken")
+		api.BadInputs(w, "Invalid forgot password token", api.InvalidForgotToken, "forgotPasswordToken")
 		return
 	}
 
@@ -242,18 +241,18 @@ func (pr *ProfileRouter) setupNewUserAccountHandler(w http.ResponseWriter, r *ht
 
 	// Validate fields
 	if valid.IsNull(setupNewUserRequest.Token) {
-		badInputs(w, "Missing token", api.InvalidToken, "token")
+		api.BadInputs(w, "Missing token", api.InvalidToken, "token")
 		return
 	}
 
 	tokenLength := viper.GetInt("session.tokenLength")
 	if valid.IsLength(setupNewUserRequest.Token, 0, tokenLength) {
-		badInputs(w, "Invalid token length", api.InvalidToken, "token")
+		api.BadInputs(w, "Invalid token length", api.InvalidToken, "token")
 		return
 	}
 
 	if !valid.IsLength(setupNewUserRequest.Password, PasswordMinLength, PasswordMaxLength) {
-		badInputs(w, "Invalid password length", api.FieldSize, "password")
+		api.BadInputs(w, "Invalid password length", api.FieldSize, "password")
 		return
 	}
 
@@ -286,11 +285,11 @@ func TokenHandler(next http.Handler) http.Handler {
 
 func NewAuthResponse(values *Profile) *AuthResponse {
 	return &AuthResponse{
-		FirstName:        values.FirstName,
-		LastName:         values.LastName,
-		Company:          values.Company,
-		Id:               values.ProfileId,
-		WeekStart:        values.WeekStart,
+		FirstName: values.FirstName,
+		LastName:  values.LastName,
+		Company:   values.Company,
+		Id:        values.ProfileId,
+		WeekStart: values.WeekStart,
 	}
 }
 
@@ -355,7 +354,7 @@ func (pr *ProfileRouter) updateProfileHandler(w http.ResponseWriter, r *http.Req
 	if !valid.IsNull(profileRequest.Email) {
 		emailLowerCase := strings.ToLower(profileRequest.Email)
 		if !valid.IsEmail(emailLowerCase) {
-			badInputs(w, "Invalid email", api.InvalidEmail, "email")
+			api.BadInputs(w, "Invalid email", api.InvalidEmail, "email")
 			return
 		}
 		updatedProfile.Email = emailLowerCase
@@ -363,7 +362,7 @@ func (pr *ProfileRouter) updateProfileHandler(w http.ResponseWriter, r *http.Req
 
 	if !valid.IsNull(profileRequest.FirstName) {
 		if !valid.IsLength(profileRequest.FirstName, NameMinLength, NameMaxLength) {
-			badInputs(w, "First name must be between 1 and 64 characters", api.FieldSize, "firstName")
+			api.BadInputs(w, "First name must be between 1 and 64 characters", api.FieldSize, "firstName")
 			return
 		}
 		updatedProfile.FirstName = profileRequest.FirstName
@@ -371,7 +370,7 @@ func (pr *ProfileRouter) updateProfileHandler(w http.ResponseWriter, r *http.Req
 
 	if !valid.IsNull(profileRequest.LastName) {
 		if !valid.IsLength(profileRequest.LastName, NameMinLength, NameMaxLength) {
-			badInputs(w, "Last name must be between 1 and 64 characters", api.FieldSize, "lastName")
+			api.BadInputs(w, "Last name must be between 1 and 64 characters", api.FieldSize, "lastName")
 			return
 		}
 		updatedProfile.LastName = profileRequest.LastName
@@ -379,7 +378,7 @@ func (pr *ProfileRouter) updateProfileHandler(w http.ResponseWriter, r *http.Req
 
 	if !valid.IsNull(profileRequest.Timezone) {
 		if !valid.IsTimezone(profileRequest.Timezone) {
-			badInputs(w, "Invalid timezone", api.InvalidTimezone, "timezone")
+			api.BadInputs(w, "Invalid timezone", api.InvalidTimezone, "timezone")
 			return
 		}
 		updatedProfile.Timezone = profileRequest.Timezone
@@ -410,17 +409,17 @@ func (pr *ProfileRouter) updatePasswordHandler(w http.ResponseWriter, r *http.Re
 	}
 
 	if valid.IsNull(request.CurrentPassword) || !valid.IsLength(request.CurrentPassword, PasswordMinLength, PasswordMaxLength) {
-		badInputs(w, "Invalid current password", api.FieldSize, "currentPassword")
+		api.BadInputs(w, "Invalid current password", api.FieldSize, "currentPassword")
 		return
 	}
 
 	if valid.IsNull(request.Password) || !valid.IsLength(request.Password, PasswordMinLength, PasswordMaxLength) {
-		badInputs(w, "Invalid password field size", api.FieldSize, "password")
+		api.BadInputs(w, "Invalid password field size", api.FieldSize, "password")
 		return
 	}
 
 	if valid.IsNull(request.ConfirmPassword) || !valid.IsLength(request.ConfirmPassword, PasswordMinLength, PasswordMaxLength) {
-		badInputs(w, "Invalid confirm password field size", api.FieldSize, "confirmPassword")
+		api.BadInputs(w, "Invalid confirm password field size", api.FieldSize, "confirmPassword")
 		return
 	}
 
@@ -488,27 +487,27 @@ func (pr *ProfileRouter) createAccountHandler(w http.ResponseWriter, r *http.Req
 	defer api.CloseBody(r.Body)
 
 	if !valid.IsEmail(accountRequest.Email) {
-		badInputs(w, "Invalid email", api.InvalidEmail, "email")
+		api.BadInputs(w, "Invalid email", api.InvalidEmail, "email")
 		return
 	}
 
 	if !valid.IsLength(accountRequest.Password, PasswordMinLength, PasswordMaxLength) {
-		badInputs(w, "Password must be between 6 and 32 characters", api.FieldSize, "password")
+		api.BadInputs(w, "Password must be between 6 and 64 characters", api.FieldSize, "password")
 		return
 	}
 
 	if !valid.IsLength(accountRequest.FirstName, NameMinLength, NameMaxLength) {
-		badInputs(w, "First name must be between 1 and 64 characters", api.FieldSize, "firstName")
+		api.BadInputs(w, "First name must be between 1 and 64 characters", api.FieldSize, "firstName")
 		return
 	}
 
 	if !valid.IsLength(accountRequest.LastName, NameMinLength, NameMaxLength) {
-		badInputs(w, "Last name must be between 1 and 64 characters", api.FieldSize, "lastName")
+		api.BadInputs(w, "Last name must be between 1 and 64 characters", api.FieldSize, "lastName")
 		return
 	}
 
 	if !valid.IsLength(accountRequest.Company, CompanyNameMinLength, CompanyNameMaxLength) {
-		badInputs(w, "Company name must be between 1 and 64 characters", api.FieldSize, "company")
+		api.BadInputs(w, "Company name must be between 1 and 64 characters", api.FieldSize, "company")
 		return
 	}
 
@@ -540,17 +539,17 @@ func (pr *ProfileRouter) updateAccountHandler(w http.ResponseWriter, r *http.Req
 	defer api.CloseBody(r.Body)
 
 	if !valid.IsLength(accountRequest.Company, CompanyNameMinLength, CompanyNameMaxLength) {
-		badInputs(w, "Company name must be between 1 and 64 characters", api.FieldSize, "company")
+		api.BadInputs(w, "Company name must be between 1 and 64 characters", api.FieldSize, "company")
 		return
 	}
 
 	if !IsWeekStart(accountRequest.WeekStart) {
-		badInputs(w, "Invalid week start", api.InvalidWeekStart, "weekStart")
+		api.BadInputs(w, "Invalid week start", api.InvalidWeekStart, "weekStart")
 		return
 	}
 
 	if !valid.IsTimezone(accountRequest.Timezone) {
-		badInputs(w, "Invalid timezone", api.InvalidTimezone, "timezone")
+		api.BadInputs(w, "Invalid timezone", api.InvalidTimezone, "timezone")
 		return
 	}
 
@@ -591,7 +590,7 @@ func (pr *ProfileRouter) closeAccountHandler(w http.ResponseWriter, r *http.Requ
 	defer api.CloseBody(r.Body)
 
 	if valid.IsNull(closeRequest.Reason) {
-		badInputs(w, "Must include pr valid reason for closing account", api.MissingField, "reason")
+		api.BadInputs(w, "Must include pr valid reason for closing account", api.MissingField, "reason")
 		return
 	}
 
@@ -652,17 +651,17 @@ func (pr *ProfileRouter) addUserHandler(w http.ResponseWriter, r *http.Request) 
 	defer api.CloseBody(r.Body)
 
 	if !valid.IsEmail(newUserRequest.Email) {
-		badInputs(w, "Invalid email", api.InvalidEmail, "email")
+		api.BadInputs(w, "Invalid email", api.InvalidEmail, "email")
 		return
 	}
 
 	if !valid.IsLength(newUserRequest.FirstName, NameMinLength, NameMaxLength) {
-		badInputs(w, "First name must be between 1 and 64 characters", api.FieldSize, "firstName")
+		api.BadInputs(w, "First name must be between 1 and 64 characters", api.FieldSize, "firstName")
 		return
 	}
 
 	if !valid.IsLength(newUserRequest.LastName, NameMinLength, NameMaxLength) {
-		badInputs(w, "Last name must be between 1 and 64 characters", api.FieldSize, "lastName")
+		api.BadInputs(w, "Last name must be between 1 and 64 characters", api.FieldSize, "lastName")
 		return
 	}
 
@@ -729,7 +728,7 @@ func (pr *ProfileRouter) removeUserHandler(w http.ResponseWriter, r *http.Reques
 	defer api.CloseBody(r.Body)
 
 	if valid.IsNull(removeUserRequest.Email) {
-		badInputs(w, "Invalid email", api.InvalidField, "email")
+		api.BadInputs(w, "Invalid email", api.InvalidField, "email")
 		return
 	}
 
@@ -810,10 +809,6 @@ func (pr *ProfileRouter) requireValidAccount(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
-}
-
-func badInputs(w http.ResponseWriter, message string, code string, field string) {
-	api.ErrorJson(w, api.NewError(errors.New("invalid input"), message, code, api.NewErrorDetail("field", field)), http.StatusBadRequest)
 }
 
 func NewAccountCompaniesResponse(accounts []*Account) []*CompanyResponse {

@@ -25,9 +25,9 @@ const (
 
 // Account Status
 const (
-	AccountNew       AccountStatus = "new"
-	AccountValid     AccountStatus = "valid"
-	AccountArchived  AccountStatus = "archived"
+	AccountNew      AccountStatus = "new"
+	AccountValid    AccountStatus = "valid"
+	AccountArchived AccountStatus = "archived"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 )
 
 func Ping(db *sqlx.DB) http.HandlerFunc {
-	fn := func (w http.ResponseWriter, r * http.Request) {
+	fn := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			writeOutput(w, http.StatusBadRequest, "invalid method")
 			return

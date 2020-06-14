@@ -3,7 +3,6 @@ package profile
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"github.com/bryanmorgan/time-tracking-api/emails"
 	"strconv"
 	"strings"
@@ -31,8 +30,8 @@ type AccountRequest struct {
 	Email     string
 	Password  string
 	Timezone  string
-	Company string
-	Phone   string
+	Company   string
+	Phone     string
 }
 
 type AccountUpdateRequest struct {
@@ -233,7 +232,6 @@ func (pr *ProfileResource) SetupNewUser(token string, password string) *api.Erro
 		return api.NewError(nil, "Failed to update password", api.SystemError)
 	}
 
-	// TODO: Update profile state to be 'valid'
 	err = pr.store.UpdateProfileState(newUserTokenData.ProfileId, ProfileValid)
 	if err != nil {
 		return api.NewError(nil, "Failed to update profile state", api.SystemError)
@@ -329,8 +327,6 @@ func (pr *ProfileResource) UpdatePassword(profileId int, currentPassword string,
 		return api.NewError(err, "Failed to get password for profile", api.SystemError)
 	}
 
-	// TODO: validate this logic
-
 	err = bcrypt.CompareHashAndPassword([]byte(oldPassword), []byte(currentPassword))
 	if err != nil {
 		// Passwords do not match. Only log if there was a real error
@@ -415,8 +411,8 @@ func (pr *ProfileResource) Create(accountRequest *AccountRequest) (*Account, *Pr
 	}
 
 	newAccount := Account{
-		Company:       accountRequest.Company,
-		AccountStatus: AccountValid,
+		Company:         accountRequest.Company,
+		AccountStatus:   AccountValid,
 		AccountTimezone: accountRequest.Timezone,
 	}
 
@@ -431,7 +427,8 @@ func (pr *ProfileResource) Create(accountRequest *AccountRequest) (*Account, *Pr
 			Password:  encryptedPassword,
 			FirstName: accountRequest.FirstName,
 			Account: Account{
-				Company: accountRequest.Company,
+				AccountId: accountId,
+				Company:   accountRequest.Company,
 			},
 			LastName: accountRequest.LastName,
 			Timezone: accountRequest.Timezone,
@@ -502,10 +499,10 @@ func (pr *ProfileResource) AddUser(request *AddUserRequest, account *Account) (*
 
 		// TODO: send user user email and create page for '/new-user' experience, where we validate email,
 		// token and ask for password, then update the state to ProfileValid
-		firstNameEncoded := base64.RawURLEncoding.EncodeToString([]byte(user.FirstName))
-		resetUrl := config.CreateUrl("/new-user/"+firstNameEncoded+"/"+forgotPasswordToken, "")
-
-		logger.Log.Warn(fmt.Sprintf("Added user %d URL: %s", profileId, resetUrl))
+		//firstNameEncoded := base64.RawURLEncoding.EncodeToString([]byte(user.FirstName))
+		//resetUrl := config.CreateUrl("/new-user/"+firstNameEncoded+"/"+forgotPasswordToken, "")
+		//
+		//logger.Log.Debug(fmt.Sprintf("TODO: Send email for user %d URL: %s", profileId, resetUrl))
 	}
 
 	// Associate user profile to account with an initial role and status
@@ -595,8 +592,6 @@ func (pr *ProfileResource) RemoveUser(email string, account *Account) *api.Error
 		return api.NewError(err, "Failed to find user in account", api.SystemError)
 	}
 
-	logger.Log.Warn("email: " + email)
-	logger.Log.Warn(fmt.Sprintf("user: %v", user))
 	if user == nil {
 		return api.NewError(err, "Failed to find user in account", api.ProfileNotFound)
 	}

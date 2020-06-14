@@ -6,6 +6,10 @@ import (
 	"net/url"
 )
 
+const (
+	ISOShortDateFormat = "2006-01-02" //  ISO 8601: YYYY-MM-DD
+)
+
 func InitConfig() {
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath(".")

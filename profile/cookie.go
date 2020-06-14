@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-
 func AddSessionCookie(w http.ResponseWriter, token string, domain string) {
 	expiration := GetSessionExpiration()
 	cookie := http.Cookie{

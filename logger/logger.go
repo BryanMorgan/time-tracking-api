@@ -77,7 +77,6 @@ func InitLogger() {
 	}
 }
 
-
 func RequestLoggingHandler(next http.Handler) http.Handler {
 	detailed := viper.GetBool("logging.detailed")
 
@@ -109,6 +108,7 @@ func RequestLoggingHandler(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(fn)
 }
+
 // Mirror the zap interface to avoid exposing the zap package outside of the logger
 
 func NamedError(key string, err error) zapcore.Field {

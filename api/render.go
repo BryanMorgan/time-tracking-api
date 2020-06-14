@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"time"
@@ -14,11 +15,11 @@ import (
 
 const (
 	SuccessStatus = "success"
-	ErrorStatus    = "error"
+	ErrorStatus   = "error"
 )
 
 type successResponse struct {
-	Data   interface{} `json:"data,omitempty"`
+	Data interface{} `json:"data,omitempty"`
 }
 
 // Writes a successful JSON response and marshals the value type as the data element
@@ -35,7 +36,7 @@ func JsonWithStatus(w http.ResponseWriter, r *http.Request, data interface{}, st
 	}
 
 	success := successResponse{
-		Data:   data,
+		Data: data,
 	}
 
 	setJsonHeaders(w)
@@ -45,6 +46,10 @@ func JsonWithStatus(w http.ResponseWriter, r *http.Request, data interface{}, st
 		ErrorJson(w, NewError(err, "JSON encoding failure", JsonEncodeFailed), http.StatusInternalServerError)
 		return
 	}
+}
+
+func BadInputs(w http.ResponseWriter, message string, code string, field string) {
+	ErrorJson(w, NewError(errors.New("invalid input"), message, code, NewErrorDetail("field", field)), http.StatusBadRequest)
 }
 
 // Writes an error JSON response

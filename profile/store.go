@@ -193,7 +193,6 @@ func (pa *ProfileData) CreateProfile(user *Profile, accountId int, newSession bo
 		return 0, err
 	}
 
-
 	if newSession {
 		sqlStatement = `
 		INSERT INTO session (profile_id, account_id, token, token_expiration, type)
@@ -585,7 +584,7 @@ func (pa *ProfileData) RemoveUser(accountId int, userId int) error {
 func (pa *ProfileData) CloseAccount(accountId int, reason string) error {
 	updateAccountSql := `UPDATE account SET account_status=$1, close_reason=$2 WHERE account_id=$3`
 
-	result, err := pa.db.Exec(updateAccountSql, AccountArchived,reason, accountId)
+	result, err := pa.db.Exec(updateAccountSql, AccountArchived, reason, accountId)
 	if err != nil {
 		return err
 	}
