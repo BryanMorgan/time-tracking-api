@@ -35,12 +35,12 @@ email:
   fromAddress: time@example.com
   testToEmail: test@example.com
   sendGrid:
-    apiKey: SG.YOUR-API-KEY
+    apiKey: SENDGRID-PUT-YOUR-API-KEY-HERE
 
 session:
   cookieName: tt.session
   tokenLength: 64
-  secret: !!!THIS_IS_VERY_SECRET!!!
+  secret: !!!THIS_IS_VERY_SECRET_PLEASE_CHANGE_IT!!!
   tokenExpirationMinutes: 43200 # 60 * 24 * 30 = 30 days
   cookieExpirationMinutes: 43200 # 60 * 24 * 30 = 30 days
   secureCookie: false
