@@ -4,11 +4,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/bryanmorgan/time-tracking-api/api"
+	"github.com/bryanmorgan/time-tracking-api/client"
 	"github.com/bryanmorgan/time-tracking-api/config"
 	"github.com/bryanmorgan/time-tracking-api/database"
 	"github.com/bryanmorgan/time-tracking-api/logger"
 	"github.com/bryanmorgan/time-tracking-api/middleware"
 	"github.com/bryanmorgan/time-tracking-api/profile"
+	"github.com/bryanmorgan/time-tracking-api/task"
+	"github.com/bryanmorgan/time-tracking-api/timesheet"
 	"github.com/bryanmorgan/time-tracking-api/version"
 	"github.com/go-chi/chi"
 	cmiddleware "github.com/go-chi/chi/middleware"
@@ -47,9 +50,15 @@ func (a *App) Run() {
 func newRouter(db *sqlx.DB) *chi.Mux {
 	// Create database stores
 	profileStore := profile.NewProfileAccountStore(db)
+	clientStore := client.NewClientStore(db)
+	timeStore := timesheet.NewTimeStore(db)
+	taskStore := task.NewTaskStore(db)
 
 	// Create API service routers
 	profileRouter := profile.NewRouter(profileStore)
+	clientRouter := client.NewRouter(clientStore, timeStore, profileRouter)
+	timeRouter := timesheet.NewRouter(timeStore, profileRouter)
+	taskRouter := task.NewRouter(taskStore, profileRouter)
 
 	r := chi.NewRouter()
 
@@ -70,6 +79,9 @@ func newRouter(db *sqlx.DB) *chi.Mux {
 		r.Mount("/auth", profileRouter.AuthenticationRouter())
 		r.Mount("/profile", profileRouter.ProfileRouter())
 		r.Mount("/account", profileRouter.AccountRouter())
+		r.Mount("/client", clientRouter.Router())
+		r.Mount("/time", timeRouter.Router())
+		r.Mount("/task", taskRouter.Router())
 	})
 
 	r.Get("/_ping", middleware.Ping(db))
@@ -103,8 +115,8 @@ func runServers(router *chi.Mux, db *sqlx.DB) {
 
 	appAddress := fmt.Sprintf("%s:%d", hostname, port)
 	server := &http.Server{
-		Addr:    appAddress,
-		Handler: router,
+		Addr:         appAddress,
+		Handler:      router,
 		ReadTimeout:  5 * time.Minute,
 		WriteTimeout: 10 * time.Minute,
 	}
@@ -175,4 +187,3 @@ func addDelay(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(fn)
 }
-
