@@ -7,6 +7,42 @@
 	},
 	"item": [
 		{
+			"name": "Ping",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "602518a2-64fb-4de7-b291-af6301bbb158",
+						"exec": [
+							"pm.test(\"ping return 'ok'\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"ok\");",
+							"});",
+							"",
+							"pm.test(\"ping returns 200 status code\", function () {",
+							"    pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/_ping",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"_ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create Account",
 			"event": [
 				{
@@ -1023,10 +1059,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"{{$randomCompanyName}}\",\n    \"address\": \"{{$randomStreetAddress}}\"\n}\n",
-					"options": {
-						"raw": {}
-					}
+					"raw": "{\n    \"name\": \"{{$randomCompanyName}}\",\n    \"address\": \"{{$randomStreetAddress}}\"\n}\n"
 				},
 				"url": {
 					"raw": "{{base_url}}/api/client",
@@ -1168,6 +1201,207 @@
 			"response": []
 		},
 		{
+			"name": "Create Task",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a53eedae-4433-432b-b894-d9e7d7769c51",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e40eca7d-00d3-4d23-a6d1-6078cd158ad9",
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.id).to.exist",
+							"    pm.expect(data.name).to.exist",
+							"",
+							"    pm.collectionVariables.set(\"taskId\", data.id)",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"task-{{$timestamp}}\",\n\t\"rate\": 185.50,\n\t\"billable\": true,\n\t\"common\": true\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/task",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Task",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "25b04b1d-c898-4841-8e56-da3626fac5c8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6137c021-27aa-4c4b-a5ec-005df9cd0176",
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.id).to.exist",
+							"    pm.expect(data.name).to.exist",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/task/{{taskId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"task",
+						"{{taskId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Task",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6d4533a0-81d1-46d6-9dd2-ac96a3573bff",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2ec3ea65-7450-4204-bd26-2f5692194c89",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": {{taskId}},\n\t\"name\": \"task-updated-{{$timestamp}}\",\n\t\"rate\": 200,\n\t\"billable\": false,\n\t\"common\": false\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/task",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create Project",
 			"event": [
 				{
@@ -1187,6 +1421,8 @@
 							"    pm.expect(data.name).to.exist",
 							"    pm.expect(data.active).to.eq(true)",
 							"    pm.expect(data.clientId).to.eq(clientId)",
+							"",
+							"    pm.collectionVariables.set(\"projectId\", data.id)",
 							"});",
 							"",
 							""
@@ -1235,6 +1471,814 @@
 						"api",
 						"client",
 						"project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Project",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dd170445-e145-4f01-b16f-a6c1a5089671",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d567995-9db6-4c35-b85f-9395e88e115b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"let clientId = parseInt(pm.variables.replaceIn('{{clientId}}'))",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.id).to.exist",
+							"    pm.expect(data.name).to.exist",
+							"    pm.expect(data.active).to.eq(true)",
+							"    pm.expect(data.clientId).to.eq(clientId)",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/client/project/{{projectId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"project",
+						"{{projectId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Project",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b7bb6e22-e61c-4a36-8b6c-f15b4eb43c11",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "345a6529-a6a8-4ceb-a085-12e03f0e6e0d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": {{projectId}},\n\t\"name\": \"updated-project-{{$timestamp}}\",\n\t\"code\": \"{{$guid}}\",\n\t\"active\": true,\n\t\"clientId\": {{clientId}},\n\t\"tasks\": [\n\t\t{\n\t\t\t\"taskId\": {{taskId}}\n\t\t}\n\t]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client/project",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Projects",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8657a35c-4030-49f8-b1cb-db7d750b7ea9",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a02bf198-4b4e-4f50-a0b1-8ca92783d5a1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"let clientId = parseInt(pm.variables.replaceIn('{{clientId}}'))",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data[0].id).to.exist",
+							"    pm.expect(data[0].name).to.exist",
+							"    pm.expect(data[0].active).to.eq(true)",
+							"    pm.expect(data[0].clientId).to.eq(clientId)",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/client/project/all",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"project",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Save or Update Time Entries",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7ce0a0b2-e186-451a-bdc3-fde38f2a4f13",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0a5ec32a-cf5b-4ef1-90b1-1bf3a8b0c2bf",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"entries\":[\n\t\t{\n\t\t\t\"day\": \"2017-10-12\",\n\t\t\t\"hours\": 8,\n\t\t\t\"taskId\": {{taskId}},\n\t\t\t\"projectId\": {{projectId}}\n\t\t},\n\t\t{\n\t\t\t\"day\": \"2017-10-11\",\n\t\t\t\"hours\": 4,\n\t\t\t\"taskId\": {{taskId}},\n\t\t\t\"projectId\": {{projectId}}\n\t\t}\n\t]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/time",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"time"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Time for Week: 2017-10-11",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "64cf650e-e5eb-4dc7-860a-bf2629bd4223",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "be449e68-25d3-4bcf-b318-864b8f459491",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.entries).to.exist",
+							"    pm.expect(data.entries.length).to.be.greaterThan(1);",
+							"    pm.expect(data.start).to.eq('2017-10-10')",
+							"    pm.expect(data.end).to.eq('2017-10-16')",
+							"    pm.expect(data.entries[0].day).to.eq('2017-10-11')",
+							"    pm.expect(data.entries[0].hours).to.eq(4)",
+							"    pm.expect(data.entries[0].clientName).to.exist",
+							"    pm.expect(data.entries[0].projectName).to.exist",
+							"    pm.expect(data.entries[0].taskName).to.exist",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/time/week/2017-10-11",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"time",
+						"week",
+						"2017-10-11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Time for Empty Week: 2017-01-01",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28dfe74d-3460-4c3f-abd1-4164055bfdcd",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2f491281-7a10-43a1-9545-fa50ddd88652",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data.entries).to.exist",
+							"    pm.expect(data.entries.length).to.be.eq(0);",
+							"    pm.expect(data.start).to.eq('2016-12-27')",
+							"    pm.expect(data.end).to.eq('2017-01-02')",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/time/week/2017-01-01",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"time",
+						"week",
+						"2017-01-01"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Archive Task",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a522664a-599a-4af6-aee1-502ced11ca6b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "82d5a7d5-9a2d-44b8-9fa0-86160d362798",
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": {{taskId}}\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/task/archive",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"task",
+						"archive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Archive Project",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9122fd68-8c80-4100-bfa5-de7bbf387bad",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "941e2cae-e741-48fe-bb41-b3e01e9fd59c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"projectId\": {{projectId}}\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client/project/archive",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"project",
+						"archive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Project from Time for Week: 2017-10-12",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6679793a-a659-4c11-a31f-61f062cc2fcd",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c2a4271-0ee5-42e9-b77f-236b0962e7fd",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"startDate\": \"2017-10-12\",\n\t\"endDate\": \"2017-10-19\",\n\t\"taskId\": {{taskId}},\n\t\"projectId\": {{projectId}},\n\t\"deleteWeek\": true\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/time/project/week",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"time",
+						"project",
+						"week"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Task",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b847aedb-5d5b-43c3-a3d3-7b256d27b21f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "127437f2-e20a-4fee-b923-276a96526524",
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": {{taskId}}\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/task",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Project",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "92de4b63-cf43-405a-ba6e-d65faea1be4f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cbdc69a8-9564-4884-b0ec-6f101925b884",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{session.cookies}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"projectId\": {{projectId}}\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client/project",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client",
+						"project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Client",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "25c502fc-822b-4c36-ac2e-9512acef1c7b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d3e943a7-3a19-44f4-9e7f-f39ac99e1aca",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json()",
+							"    pm.expect(data).to.eql({})",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": {{clientId}}\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/client",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"client"
 					]
 				}
 			},
@@ -1619,44 +2663,56 @@
 	],
 	"variable": [
 		{
-			"id": "262570f7-6dcb-4c4f-a096-b664f0a65c9a",
+			"id": "d406d5d6-f5d3-4544-9ef2-c6e21744625e",
 			"key": "email",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "3d7fe326-6c2c-4a46-8fb2-6726e71aa3d3",
+			"id": "613f134f-a068-4c50-8b53-1ae614399821",
 			"key": "password",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "42bc1729-ebf7-4a62-9a16-95a7c4a39a1b",
+			"id": "650305ec-2712-4f5a-9afe-07f0f9d99bc1",
 			"key": "tt.session",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "63c1b4be-2ebc-4335-8f9b-34fe0dc3198d",
+			"id": "693eed0a-59c4-45dd-86e8-5d2827dd301e",
 			"key": "session.cookies",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "32d571d0-ec8e-4ad9-ae96-2ede0236af51",
+			"id": "485bfc35-21ee-44bb-ad0d-f98135819e3f",
 			"key": "newPassword",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "05518c33-b281-45c0-8c65-b1cf316818f9",
+			"id": "3d72e2cd-23ea-46a2-91a0-d7185ce70657",
 			"key": "additionalUserEmail",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "07cad489-9c01-4e73-8387-d6b44b636b34",
+			"id": "894c038b-0c9d-49d8-a25f-5011dd0d563e",
 			"key": "clientId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "ddff76f2-c1d8-4cce-85a2-1122079976db",
+			"key": "taskId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "2f882a7f-8ee7-4c54-8da4-8d56c706ea25",
+			"key": "projectId",
 			"value": "",
 			"type": "string"
 		}
