@@ -480,9 +480,9 @@ func TestCreateProject(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			body := encodeJson(t, &map[string]interface{}{
-				"name": testCase.projectName,
-				"clientId":          testCase.clientId,
-				"code":        testCase.code,
+				"name":     testCase.projectName,
+				"clientId": testCase.clientId,
+				"code":     testCase.code,
 			})
 
 			r, _ := http.NewRequest("POST", "/api/client/project", body)
@@ -553,10 +553,11 @@ func TestUpdateProject(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			body := encodeJson(t, &map[string]interface{}{
-				"id":          testCase.projectId,
-				"name": testCase.projectName,
-				"code":        testCase.code,
-				"active":      testCase.active,
+				"id":       testCase.projectId,
+				"name":     testCase.projectName,
+				"code":     testCase.code,
+				"active":   testCase.active,
+				"clientId": clientId,
 			})
 
 			r, _ := http.NewRequest("PUT", "/api/client/project", body)
