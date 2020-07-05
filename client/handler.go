@@ -433,6 +433,11 @@ func (a *ClientRouter) updateProjectHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	if projectRequest.ClientId <= 0 {
+		api.ErrorJson(w, api.NewFieldError(nil, "Missing required clientId", api.MissingField, "clientId"), http.StatusBadRequest)
+		return
+	}
+
 	if valid.IsNull(projectRequest.Name) || !valid.IsLength(projectRequest.Name, ProjectNameMinLength, ProjectNameMaxLength) {
 		api.ErrorJson(w, api.NewFieldError(nil, "Project name must be between 1 and 128 characters", api.FieldSize, "name"), http.StatusBadRequest)
 		return
