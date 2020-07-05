@@ -26,5 +26,5 @@ cors:
   enabled: true
   domains:
     - http://localhost
-    - http://localhost:3000
+    - http://localhost:1234
 
