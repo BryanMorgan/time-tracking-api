@@ -10,6 +10,7 @@ import (
 	"github.com/bryanmorgan/time-tracking-api/logger"
 	"github.com/bryanmorgan/time-tracking-api/middleware"
 	"github.com/bryanmorgan/time-tracking-api/profile"
+	"github.com/bryanmorgan/time-tracking-api/reporting"
 	"github.com/bryanmorgan/time-tracking-api/task"
 	"github.com/bryanmorgan/time-tracking-api/timesheet"
 	"github.com/bryanmorgan/time-tracking-api/version"
@@ -53,12 +54,14 @@ func newRouter(db *sqlx.DB) *chi.Mux {
 	clientStore := client.NewClientStore(db)
 	timeStore := timesheet.NewTimeStore(db)
 	taskStore := task.NewTaskStore(db)
+	reportingStore := reporting.NewReportingStore(db)
 
 	// Create API service routers
 	profileRouter := profile.NewRouter(profileStore)
 	clientRouter := client.NewRouter(clientStore, timeStore, profileRouter)
 	timeRouter := timesheet.NewRouter(timeStore, profileRouter)
 	taskRouter := task.NewRouter(taskStore, profileRouter)
+	reportingRouter := reporting.NewRouter(reportingStore, profileRouter)
 
 	r := chi.NewRouter()
 
@@ -82,6 +85,7 @@ func newRouter(db *sqlx.DB) *chi.Mux {
 		r.Mount("/client", clientRouter.Router())
 		r.Mount("/time", timeRouter.Router())
 		r.Mount("/task", taskRouter.Router())
+		r.Mount("/report", reportingRouter.Router())
 	})
 
 	r.Get("/_ping", middleware.Ping(db))
