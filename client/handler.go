@@ -48,7 +48,6 @@ type ProjectContainerRequest struct {
 type TaskRequest struct {
 	Id       int
 	Billable bool
-	Name     string
 	Rate     float64
 }
 
