@@ -1090,8 +1090,6 @@
 							"    let data = pm.response.json().data",
 							"    pm.expect(data.id).to.exist",
 							"    pm.expect(data.name).to.exist",
-							"",
-							"    pm.collectionVariables.set(\"clientId\", data.id)",
 							"});",
 							"",
 							""
@@ -1457,7 +1455,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"{{$randomProductName}}\",\n    \"clientId\": {{clientId}}\n}\n",
+					"raw": "{\n    \"name\": \"{{$randomProductName}}\",\n    \"clientId\": {{clientId}},\n    \"tasks\": [ {\n        \"id\": {{taskId}},\n        \"billable\": true,\n        \"rate\": {{$randomInt}}\n    }]\n}\n",
 					"options": {
 						"raw": {}
 					}
@@ -1594,7 +1592,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\": {{projectId}},\n\t\"name\": \"updated-project-{{$timestamp}}\",\n\t\"code\": \"{{$guid}}\",\n\t\"active\": true,\n\t\"clientId\": {{clientId}},\n\t\"tasks\": [\n\t\t{\n\t\t\t\"taskId\": {{taskId}}\n\t\t}\n\t]\n}"
+					"raw": "{\n\t\"id\": {{projectId}},\n\t\"name\": \"updated-project-{{$timestamp}}\",\n\t\"code\": \"{{$guid}}\",\n\t\"active\": true,\n\t\"clientId\": {{clientId}},\n\t\"tasks\": [\n\t\t{\n\t\t\t\"id\": {{taskId}},\n\t\t\t \"billable\": true,\n        \t \"rate\": {{$randomInt}}\n\t\t}\n\t]\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/api/client/project",
@@ -1877,6 +1875,165 @@
 						"time",
 						"week",
 						"2017-01-01"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Time Report by Person",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c3c7a6ac-92cc-48f9-af36-5e23f848aa7c",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "271a602d-8cff-4480-9b91-a6638487747a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data).to.exist",
+							"    pm.expect(data[0].profileId).to.exist",
+							"    pm.expect(data[0].firstName).to.exist",
+							"    pm.expect(data[0].lastName).to.exist",
+							"    pm.expect(data[0].nonBillableHours).to.exist",
+							"    pm.expect(data[0].billableHours).to.exist",
+							"    pm.expect(data[0].billableTotal).to.exist",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/report/time/person?from=2017-01-01&to=2017-12-31",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"report",
+						"time",
+						"person"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2017-01-01"
+						},
+						{
+							"key": "to",
+							"value": "2017-12-31"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Time Report by Client",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e530979c-77b1-458a-bece-e0759c9f48db",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "91535021-c7c1-42f7-993a-0563b22f0adb",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response data is correct\", function () {",
+							"    let data = pm.response.json().data",
+							"    pm.expect(data).to.exist",
+							"    pm.expect(data[0].clientId).to.exist",
+							"    pm.expect(data[0].clientName).to.exist",
+							"    pm.expect(data[0].nonBillableHours).to.exist",
+							"    pm.expect(data[0].billableHours).to.exist",
+							"    pm.expect(data[0].billableTotal).to.exist",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "{{session.cookies}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/report/time/client?from=2017-01-01&to=2017-12-31",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"report",
+						"time",
+						"client"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2017-01-01"
+						},
+						{
+							"key": "to",
+							"value": "2017-12-31"
+						}
 					]
 				}
 			},
@@ -2663,58 +2820,49 @@
 	],
 	"variable": [
 		{
-			"id": "d406d5d6-f5d3-4544-9ef2-c6e21744625e",
+			"id": "fd7e0149-e995-420e-8435-d61543445b58",
 			"key": "email",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "613f134f-a068-4c50-8b53-1ae614399821",
+			"id": "2edda240-c02d-40a5-8d33-dda79c431c5c",
 			"key": "password",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "650305ec-2712-4f5a-9afe-07f0f9d99bc1",
+			"id": "a46d396c-21ba-46a7-9ec3-17d6f9b9e63e",
 			"key": "tt.session",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "693eed0a-59c4-45dd-86e8-5d2827dd301e",
+			"id": "81171a4f-0c6c-4b96-9eb0-8f3cf098b970",
 			"key": "session.cookies",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "485bfc35-21ee-44bb-ad0d-f98135819e3f",
+			"id": "5d6c1c96-e5f7-4b8e-8f41-1702deb654cf",
 			"key": "newPassword",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "3d72e2cd-23ea-46a2-91a0-d7185ce70657",
+			"id": "0ac494fb-d5f3-40a0-a4fc-73443dce0e10",
 			"key": "additionalUserEmail",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "894c038b-0c9d-49d8-a25f-5011dd0d563e",
+			"id": "2d480149-6cad-4009-9979-157b8575251d",
 			"key": "clientId",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "ddff76f2-c1d8-4cce-85a2-1122079976db",
+			"id": "962b843f-9261-4d1e-9632-dc5eb8b974fa",
 			"key": "taskId",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "2f882a7f-8ee7-4c54-8da4-8d56c706ea25",
+			"id": "763dde9d-36f2-41f6-84da-b9473e56f196",
 			"key": "projectId",
-			"value": "",
-			"type": "string"
+			"value": ""
 		}
 	],
 	"protocolProfileBehavior": {}
