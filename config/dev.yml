@@ -27,4 +27,5 @@ cors:
   domains:
     - http://localhost
     - http://localhost:1234
+    - http://localhost:5000
 
