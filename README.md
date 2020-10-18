@@ -8,6 +8,9 @@
 Go API for tracking time.
 
 Manages time entries for tasks that are associated with projects.
+
+See the React [Time Tracking App](https://github.com/BryanMorgan/time-tracking-app) for a reference UI.
+
 # Setup
 
 ## Database
