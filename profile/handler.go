@@ -68,6 +68,24 @@ type AccountResponse struct {
 	Updated   string `json:"updated,omitempty"`
 }
 
+type AccountUpdateRequest struct {
+    Company   string
+    Phone     string
+    Timezone  string
+    WeekStart int
+}
+
+type AddUserRequest struct {
+    FirstName string
+    LastName  string
+    Email     string
+    Role      string
+}
+
+type RemoveUserRequest struct {
+    Email string
+}
+
 type EmailRequest struct {
 	Email string
 }
