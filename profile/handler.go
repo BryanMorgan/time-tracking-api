@@ -50,6 +50,16 @@ type CompanyResponse struct {
 	Company string `json:"company"`
 }
 
+type AccountRequest struct {
+    FirstName string
+    LastName  string
+    Email     string
+    Password  string
+    Timezone  string
+    Company   string
+    Phone     string
+}
+
 type AccountResponse struct {
 	Company   string `json:"company"`
 	WeekStart int    `json:"weekStart"`

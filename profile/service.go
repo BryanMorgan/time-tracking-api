@@ -24,15 +24,6 @@ func NewProfileService(store ProfileStore) ProfileService {
 	return &ProfileResource{store: store}
 }
 
-type AccountRequest struct {
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
-	Timezone  string
-	Company   string
-	Phone     string
-}
 
 type AccountUpdateRequest struct {
 	Company   string
