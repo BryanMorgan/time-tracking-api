@@ -13,16 +13,13 @@ const (
 	MethodNotAllowed = "MethodNotAllowed"
 
 	InvalidJson        = "InvalidJson"
-	InvalidContentType = "InvalidContentType"
 	JsonEncodeFailed   = "JsonEncodeFailed"
 	SystemError        = "SystemError"
-	PaymentError       = "PaymentError"
 
 	EncryptionFailed    = "EncryptionFailed"
 	TokenCreationFailed = "TokenCreationFailed"
 
 	AccountExists        = "AccountExists"
-	SubscriptionExists   = "SubscriptionExists"
 	UpdateFailed         = "UpdateFailed"
 	AccountCreateFailed  = "AccountCreateFailed"
 	ProfileCreateFailed  = "ProfileCreateFailed"
@@ -30,7 +27,6 @@ const (
 	ProfileNotFound      = "ProfileNotFound"
 	InvalidEmail         = "InvalidEmail"
 	InvalidForgotToken   = "InvalidForgotToken"
-	InvalidAccountId     = "InvalidAccountId"
 	InvalidPassword      = "InvalidPassword"
 	PasswordMismatch     = "PasswordMismatch"
 	InvalidField         = "InvalidField"
@@ -41,8 +37,6 @@ const (
 	InvalidToken             = "InvalidToken"
 	TokenExpired             = "TokenExpired"
 	MissingToken             = "MissingToken"
-	InvalidAccountForProfile = "InvalidAccountForProfile"
-	AccountSwitchFailed      = "AccountSwitchFailed"
 
 	ProfileInactive = "ProfileInactive"
 	AccountInactive = "AccountInactive"
