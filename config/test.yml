@@ -10,8 +10,8 @@ logging:
   enableStacktrace: false
 
 postgres:
-  username: timemaster
-  password: timemasterchangeme
+  username: timetraveler
+  password: timetraveler_changeme
   sslmode: disable
   timeout: 2
   connectLifetime: 2

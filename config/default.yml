@@ -12,14 +12,14 @@ logging:
   enableStacktrace: false
 
 postgres:
-  username: timemaster
   database: timetracker
+  username: timetraveler
   sslmode: require
   timeout: 60 #seconds
   connectLifetime: 2
   maxIdle: 10
   maxOpen: 20
-  master:
+  primary:
     host: localhost
     port: 5432
 

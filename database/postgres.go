@@ -29,8 +29,8 @@ func InitPostgres() *sqlx.DB {
 	database := viper.GetString("postgres.database")
 	sslmode := viper.GetString("postgres.sslmode")
 	timeout := viper.GetInt("postgres.timeout")
-	host := viper.GetString("postgres.master.host")
-	port := viper.GetInt("postgres.master.port")
+	host := viper.GetString("postgres.primary.host")
+	port := viper.GetInt("postgres.primary.port")
 
 	dataSource := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=%s connect_timeout=%d",
 		username, password, database, host, port, sslmode, timeout)

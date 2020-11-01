@@ -1,7 +1,7 @@
 name: build
 on:
   push:
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -17,8 +17,8 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
           POSTGRES_DB: timetracker
-          POSTGRES_USER: timemaster
-          POSTGRES_PASSWORD: timemasterchangeme
+          POSTGRES_USER: timetraveler
+          POSTGRES_PASSWORD: timetraveler_changeme
           POSTGRES_PORT: 5432
 
     steps:
@@ -48,12 +48,12 @@ jobs:
       run: |
         psql -h localhost -d timetracker -a -f ./database/schema-1.sql
       env:
-        PGUSER: timemaster
-        PGPASSWORD: timemasterchangeme
+        PGUSER: timetraveler
+        PGPASSWORD: timetraveler_changeme
 
     - name: Build
       run: make build
-  
+
     - name: Unit Tests
       run: make unit_test
 
