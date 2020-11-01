@@ -7,29 +7,39 @@
 
 Go API for tracking time.
 
-Manages time entries for tasks that are associated with projects.
+Manages time entries for tasks that are associated with projects. Built with Golang, Chi, and PostgreSQL.
 
 See the React [Time Tracking App](https://github.com/BryanMorgan/time-tracking-app) for a reference UI.
 
 # Setup
+You can either use the pre-built Docker image or run the Go server using a PostgreSQL instance.
 
-## Database
-Ensure you have PostgreSQL 12 or higher installed and running
+## Option #1: Docker
+To run the Go server and PostgreSQL database you can start both using Docker Compose:
+
+```docker-compose up```
+
+The API will be available at [http://localhost:8000](http://localhost:8000)
+
+## Option #2: Local
+
+### Database
+Ensure you have PostgreSQL 12 or higher installed and running.
 
 Create a `timetracker` database and role using the bootstrap SQL in:
 
 ```./database/bootstrap.sql```
 
-The create the schema in the `timetracker` database using:
+Then create the schema in the `timetracker` database using:
 
 ```./database/schema-1.sql```
 
-# Running
-To run the API server you can run the Makefile target:
+# Run Server
+To run the Go API server run the Makefile target:
 
 ```make run```
 
-which will start the dev server on the port configured in `config/dev.yml`
+which will start the server on the port configured in `config/dev.yml`. By default the API will be available at [http://localhost:8000](http://localhost:8000)
 
 # Testing
 
