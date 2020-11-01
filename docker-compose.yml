@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+    depends_on:
+      - db
+    environment:
+        GO_ENV: docker
+    command:  sh -c '/app/scripts/wait-for db:5432 -- /app/timetrack'
+
+  db:
+    image: postgres:13.0
+    environment:
+      - POSTGRES_DB=timetracker
+      - POSTGRES_USER=timetraveler
+      - POSTGRES_PASSWORD=timetraveler_changeme
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./database/schema-1.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./database/example-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    networks:
+      - backend
+
+networks:
+  backend:

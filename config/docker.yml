@@ -1,0 +1,35 @@
+application:
+  hostname: 0.0.0.0
+  port: 8000
+
+  delayRequestMilliSeconds: 0
+
+  profileEnabled: true
+  profileHostname: 0.0.0.0
+  profilePort: 8002
+
+logging:
+  output: console
+  enableStacktrace: false
+
+postgres:
+  username: timetraveler
+  password: timetraveler_changeme
+  sslmode: disable
+  timeout: 60
+  connectLifetime: 2
+  maxIdle: 2
+  maxOpen: 10
+  primary:
+      host: db
+      port: 5432
+
+cors:
+  enabled: true
+  domains:
+    - http://localhost
+    - http://localhost:1234
+    - http://localhost:5000
+    - http://localhost:3000
+    - http://localhost:8080
+
