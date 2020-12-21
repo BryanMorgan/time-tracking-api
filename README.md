@@ -7,19 +7,19 @@
 
 Go API for tracking time.
 
-Manages time entries for tasks that are associated with projects. Built with Golang, Chi, and PostgreSQL.
+Manage time entries for tasks that are associated with projects. Built with Golang and PostgreSQL.
 
 See the React [Time Tracking App](https://github.com/BryanMorgan/time-tracking-app) for a reference UI.
 
 # Setup
-You can either use the pre-built Docker image or run the Go server using a PostgreSQL instance.
+You can use Docker to get started quickly or run the Go server locally using a PostgreSQL instance.
 
 ## Option #1: Docker
-To run the Go server and PostgreSQL database you can start both using Docker Compose:
+To run the Go server and PostgreSQL database in a container you can start both using Docker Compose:
 
 ```docker-compose up```
 
-The API will be available at [http://localhost:8000](http://localhost:8000)
+The API will be available at [http://localhost:8000](http://localhost:8000) and the PostgreSQL instance will be exposed on port 5432.
 
 ## Option #2: Local
 
@@ -35,7 +35,7 @@ Then create the schema in the `timetracker` database using:
 ```./database/schema-1.sql```
 
 # Run Server
-To run the Go API server run the Makefile target:
+To run the Go API server use the `run` Makefile target:
 
 ```make run```
 
@@ -54,12 +54,12 @@ Integration tests are managed under the `integration_test` root folder and can b
 ```make int_test```
 
 ## Postman Tests
-Additional functional tests are available using he [Postman](https://www.postman.com/) tool.
+Additional functional tests are available using the [Postman](https://www.postman.com/) tool.
 These tests require the [newman](https://github.com/postmanlabs/newman) Postman command-line runner. Install using:
 
 ```npm install -g newman```
 
-Also relies on the `database/bootstrap.sql` data to be present. To run the Postman tests locally, first start the web server:
+The test rely on the `database/bootstrap.sql` data to be present. To run the Postman tests locally, first start the web server:
 
 ```make run```
 
@@ -75,6 +75,10 @@ Most of the REST endpoints require an authentication token which can be supplied
 ```Authorization: Bearer {token}```
 
 Endpoints that do not require a token are noted below.
+
+To validate the local or Docker instance is working you can hit the `/_ping` endpoint and you should get back an `OK` response:
+
+```curl http://localhost:8000/_ping```
 
 ### Authentication
 
