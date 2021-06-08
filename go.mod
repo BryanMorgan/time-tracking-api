@@ -1,6 +1,6 @@
 module github.com/bryanmorgan/time-tracking-api
 
-go 1.15
+go 1.16
 
 require (
 	github.com/go-chi/chi v4.0.3+incompatible

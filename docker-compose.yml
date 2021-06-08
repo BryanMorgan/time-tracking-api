@@ -16,7 +16,7 @@ services:
     command:  sh -c '/app/scripts/wait-for db:5432 -- /app/timetrack'
 
   db:
-    image: postgres:13.0
+    image: postgres:13.3
     environment:
       - POSTGRES_DB=timetracker
       - POSTGRES_USER=timetraveler
