@@ -135,7 +135,7 @@ func createUnitTestAccount(email string, firstName string, lastName string, comp
 
 	var userId int
 	profileSql := `INSERT INTO profile (email, password, first_name, last_name, profile_status, forgot_password_token, forgot_password_expiration) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING profile_id`
-	err = tx.QueryRow(profileSql, email, testPasswordEncrypted, firstName, lastName, profile.ProfileValid, TestForgotPasswordToken, "2020-12-31").Scan(&userId)
+	err = tx.QueryRow(profileSql, email, testPasswordEncrypted, firstName, lastName, profile.ProfileValid, TestForgotPasswordToken, "2050-12-31").Scan(&userId)
 	if err != nil {
 		tx.Rollback()
 		log.Panicf("Transaction rolled back in create unit test account [%s]", err.Error())

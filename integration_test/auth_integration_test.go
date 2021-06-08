@@ -339,7 +339,6 @@ func TestForgotPasswordTokenValidation(t *testing.T) {
 			AddRequestHeaders(r)
 			router.ServeHTTP(w, r)
 
-			//t.Logf("%s: %s", testCase.name, loginResponse.Body)
 			if w.Code != testCase.statusCode {
 				t.Fatalf("Invalid status code: [%d] wanted: [%d]", w.Code, testCase.statusCode)
 			}
