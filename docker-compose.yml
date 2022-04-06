@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
   api:
@@ -11,12 +11,13 @@ services:
       - backend
     depends_on:
       - db
+    tty: true      
     environment:
         GO_ENV: docker
     command:  sh -c '/app/scripts/wait-for db:5432 -- /app/timetrack'
 
   db:
-    image: postgres:13.3
+    image: postgres:14-alpine
     environment:
       - POSTGRES_DB=timetracker
       - POSTGRES_USER=timetraveler
@@ -26,8 +27,13 @@ services:
     volumes:
       - ./database/schema-1.sql:/docker-entrypoint-initdb.d/1-schema.sql
       - ./database/example-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+      - data:/var/lib/postgresql/data
     networks:
       - backend
 
+volumes:
+  data:
+
 networks:
   backend:
+    driver: bridge
